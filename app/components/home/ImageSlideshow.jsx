@@ -1,26 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Marquee from "react-fast-marquee";
-
-const useScrollPause = () => {
-  const [isPaused, setIsPaused] = useState(false);
-  const timeoutRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsPaused(true);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  return isPaused;
-};
 
 const ImageSlideshow = () => {
   const images = [
@@ -31,32 +10,63 @@ const ImageSlideshow = () => {
     '/images/slideshow/ox5.png',
   ];
 
-  const isPaused = useScrollPause();
-  const scrollContainerRef = useRef(null);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+  const containerRef = useRef(null);
+  const marqueeRef = useRef(null);
 
   const handleMouseDown = (e) => {
-    setIsScrolling(true);
-    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
-    setScrollLeft(scrollContainerRef.current.scrollLeft);
-  };
-
-  const handleMouseLeave = () => {
-    setIsScrolling(false);
+    setIsDragging(true);
+    setIsAutoPlay(false);
+    setStartX(e.pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
   };
 
   const handleMouseUp = () => {
-    setIsScrolling(false);
+    setIsDragging(false);
+    // Resume autoplay after a short delay
+    setTimeout(() => setIsAutoPlay(true), 1000);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setTimeout(() => setIsAutoPlay(true), 1000);
+    }
   };
 
   const handleMouseMove = (e) => {
-    if (!isScrolling) return;
+    if (!isDragging) return;
     e.preventDefault();
-    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const x = e.pageX - containerRef.current.offsetLeft;
     const walk = (x - startX) * 2;
-    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  // Touch events support
+  const handleTouchStart = (e) => {
+    setIsDragging(true);
+    setIsAutoPlay(false);
+    setStartX(e.touches[0].pageX - containerRef.current.offsetLeft);
+    setScrollLeft(containerRef.current.scrollLeft);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    setTimeout(() => setIsAutoPlay(true), 1000);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging) return;
+    const x = e.touches[0].pageX - containerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = scrollLeft - walk;
+    }
   };
 
   return (
@@ -66,31 +76,48 @@ const ImageSlideshow = () => {
         <h2 className="text-3xl font-bold">Summer Programs</h2>
       </div>
 
-      <div 
-        ref={scrollContainerRef}
-        className={`overflow-x-auto ${isPaused ? 'cursor-grab active:cursor-grabbing' : ''}`}
+      <div
+        ref={containerRef}
+        className={`overflow-x-auto scroll-smooth ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        }`}
         onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         onMouseMove={handleMouseMove}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
       >
-        <Marquee
-          gradient={false}
-          speed={40}
-          pauseOnHover={true}
-          play={!isPaused}
-          className="overflow-hidden"
-        >
-          {images.map((image, index) => (
-            <div key={index} className="mx-2">
-              <img
-                src={image}
-                alt={`Summer Program ${index + 1}`}
-                className="md:w-[340px] md:h-[340px] md:rounded-[30px] rounded-2xl object-cover sm:w-[280px] sm:h-[280px] w-[150px] h-[150px]"
-              />
+        <div ref={marqueeRef} className="whitespace-nowrap">
+          {isAutoPlay ? (
+            <Marquee gradient={false} speed={40} pauseOnHover={true}>
+              {images.map((image, index) => (
+                <div key={index} className="inline-block mx-2">
+                  <img
+                    src={image}
+                    alt={`Summer Program ${index + 1}`}
+                    className="md:w-[340px] md:h-[340px] md:rounded-[30px] rounded-2xl object-cover sm:w-[280px] sm:h-[280px] w-[150px] h-[150px]"
+                    draggable="false"
+                  />
+                </div>
+              ))}
+            </Marquee>
+          ) : (
+            <div className="flex">
+              {images.map((image, index) => (
+                <div key={index} className="mx-2 flex-shrink-0">
+                  <img
+                    src={image}
+                    alt={`Summer Program ${index + 1}`}
+                    className="md:w-[340px] md:h-[340px] md:rounded-[30px] rounded-2xl object-cover sm:w-[280px] sm:h-[280px] w-[150px] h-[150px]"
+                    draggable="false"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </Marquee>
+          )}
+        </div>
       </div>
     </div>
   );
