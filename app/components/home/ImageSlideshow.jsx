@@ -27,13 +27,13 @@ const ImageSlideshow = () => {
   const handleMouseUp = () => {
     setIsDragging(false);
     // Resume autoplay after a short delay
-    setTimeout(() => setIsAutoPlay(true), 1000);
+    setTimeout(() => setIsAutoPlay(true), 5000);
   };
 
   const handleMouseLeave = () => {
     if (isDragging) {
       setIsDragging(false);
-      setTimeout(() => setIsAutoPlay(true), 1000);
+      setTimeout(() => setIsAutoPlay(true), 5000);
     }
   };
 
@@ -57,7 +57,7 @@ const ImageSlideshow = () => {
 
   const handleTouchEnd = () => {
     setIsDragging(false);
-    setTimeout(() => setIsAutoPlay(true), 1000);
+    setTimeout(() => setIsAutoPlay(true), 5000);
   };
 
   const handleTouchMove = (e) => {
