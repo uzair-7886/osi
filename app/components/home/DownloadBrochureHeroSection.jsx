@@ -10,7 +10,7 @@ const DownloadBrochureHeroSection = () => {
 Our Brochure        </h1>
         
         <p className="mb-8 text-base text-black max-w-2xl mx-auto">
-        Get all the details you need about our programs, courses, and student life at Oxford Summer Institute. Download our brochure and take the first step towards an unforgettable summer experience!        </p>
+        Get all the details you need about our programs, courses, and student life at Oxford Summer Institute. Download our brochure and take the first step towards an unforgettable summer experience!        </p>
         
         <button 
           className="bg-orange  text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 text-base"
