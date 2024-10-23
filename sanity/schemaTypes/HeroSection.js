@@ -17,6 +17,11 @@ export default {
             type: 'string',
         },
         {
+            name:'date',
+            title:'Date',
+            type:'string'
+        },
+        {
             name: 'buttonText',
             title: 'Button Text',
             type: 'string',

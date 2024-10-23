@@ -11,7 +11,28 @@ import TestimonialsSlider from "./components/home/TestimonialsSlider";
 import { LearningGrid } from "./components/home/ImagesGrid";
 import { LivingGrid } from "./components/home/ImagesGrid";
 
-export default function Home() {
+// const heroSectionQuery = `
+//   *[_type == "heroSection"][0] {
+//     text,
+//     date,
+//     buttonText,
+//     image
+//   }
+// `;
+
+// async function getHeroData() {
+//   try {
+//     return await client.fetch(heroSectionQuery);
+//   } catch (error) {
+//     console.error('Error fetching hero data:', error);
+//     return null;
+//   }
+// }
+
+// export const revalidate = 60;
+
+export default async function Home() {
+  // const heroData = await getHeroData();
   return (
     <div>
       <Hero/>

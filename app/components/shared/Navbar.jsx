@@ -18,7 +18,7 @@ const Navbar = () => {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <a href="#" className="bg-darkblue bg-opacity-30 text-black px-3 py-2 rounded-full text-sm font-medium">Home</a>
+                <a href="/" className="bg-darkblue bg-opacity-30 text-black px-3 py-2 rounded-full text-sm font-medium">Home</a>
                 <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">About</a>
                 <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Programs</a>
                 <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Why Choose us</a>

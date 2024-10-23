@@ -1,47 +1,47 @@
-import React, { useState } from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Star } from 'lucide-react';
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+
+const testimonialsQuery = `
+  *[_type == "testimonials"][0] {
+    testimonialsList[] {
+      text,
+      name,
+      rating,
+      image
+    }
+  }
+`;
 
 const TestimonialsSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
 
-  const testimonials = [
-    {
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-      author: "Barbara D. Smith",
-      rating: 4,
-      image: "/images/person.png"
-    },
-    {
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-        author: "Michael R. Johnson",
-      rating: 5,
-      image: "/images/person.png"
-    },
-    {
-        text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-        author: "Sarah K. Williams",
-      rating: 2,
-      image: "/images/person.png"
-    },
-    {
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-      author: "Michael R. Johnson",
-    rating: 5,
-    image: "/images/person.png"
-  },
-  {
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-    author: "Michael R. Johnson",
-  rating: 5,
-  image: "/images/person.png"
-},
-{
-  text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer interdum ut quam ut dapibus. Pellentesque tortor ante, consectetur eget dolor in, luctus luctus purus.",
-  author: "Michael R. Johnson",
-rating: 5,
-image: "/images/person.png"
-},
-  ];
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const data = await client.fetch(testimonialsQuery);
+        if (data?.testimonialsList) {
+          const formattedTestimonials = data.testimonialsList.map(item => ({
+            text: item.text,
+            author: item.name,
+            rating: item.rating || 5,
+            image: item.image ? urlFor(item.image).url() : ""
+          }));
+          setTestimonials(formattedTestimonials);
+        }
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+        setTestimonials([
+          
+        ]);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % testimonials.length);
@@ -50,6 +50,18 @@ image: "/images/person.png"
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
+
+  if (!testimonials.length) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-16 flex items-center justify-center">
+        <div className="animate-pulse w-full">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+          <div className="h-12 bg-gray-200 rounded w-1/2 mb-8"></div>
+          <div className="h-64 bg-gray-200 rounded w-full"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='bg-grey bg-opacity-10'>
@@ -96,12 +108,14 @@ image: "/images/person.png"
                 <button 
                   onClick={prevSlide}
                   className="w-12 h-12 rounded-full border-2 border-orange text-orange flex items-center justify-center hover:bg-orange hover:text-white transition-colors"
+                  disabled={testimonials.length <= 1}
                 >
                   <ArrowLeft size={20} />
                 </button>
                 <button 
                   onClick={nextSlide}
                   className="w-12 h-12 rounded-full border-2 border-orange text-orange flex items-center justify-center hover:bg-orange hover:text-white transition-colors"
+                  disabled={testimonials.length <= 1}
                 >
                   <ArrowRight size={20} />
                 </button>

@@ -1,21 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Marquee from "react-fast-marquee";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+
+const slideshowQuery = `
+  *[_type == "imageSlideshow"][0] {
+    images
+  }
+`;
 
 const ImageSlideshow = () => {
-  const images = [
-    '/images/slideshow/ox1.png',
-    '/images/slideshow/ox2.png',
-    '/images/slideshow/ox3.png',
-    '/images/slideshow/ox4.png',
-    '/images/slideshow/ox5.png',
-  ];
-
+  const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const containerRef = useRef(null);
   const marqueeRef = useRef(null);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const data = await client.fetch(slideshowQuery);
+        if (data?.images) {
+          const formattedImages = data.images.map(image => urlFor(image).url());
+          setImages(formattedImages);
+        }
+      } catch (error) {
+        console.error("Error fetching images:", error);
+        setImages([]);
+      }
+    };
+
+    fetchImages();
+  }, []);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -68,6 +86,26 @@ const ImageSlideshow = () => {
       containerRef.current.scrollLeft = scrollLeft - walk;
     }
   };
+
+  if (!images.length) {
+    return (
+      <div className="w-full max-w-7xl mx-auto p-6">
+        <div className="animate-pulse">
+          <div className="text-center mb-8">
+            <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto mb-2"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto"></div>
+          </div>
+          <div className="flex space-x-4 overflow-hidden">
+            {[...Array(5)].map((_, index) => (
+              <div key={index} className="flex-shrink-0">
+                <div className="bg-gray-200 rounded-[30px] w-[340px] h-[340px]"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
