@@ -1,8 +1,11 @@
 import React from 'react'
+import HeroBanner from '../components/shared/HeroBanner'
 
 function page() {
   return (
-    <div>programs page</div>
+    <>
+      <HeroBanner text="Subjects We Offer" />
+    </>
   )
 }
 

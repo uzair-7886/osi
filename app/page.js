@@ -6,7 +6,7 @@ import ImageSlideshow from "./components/home/ImageSlideshow";
 import ProgramsSection from "./components/home/ProgramsSection";
 import RegisterHeroSection from "./components/home/RegisterHeroSection";
 import Subjects from "./components/home/Subjects";
-import SummerBanner from "./components/home/SummerBanner";
+import SummerBanner from "./components/shared/SummerBanner";
 import TestimonialsSlider from "./components/home/TestimonialsSlider";
 import { LearningGrid } from "./components/home/ImagesGrid";
 import { LivingGrid } from "./components/home/ImagesGrid";
