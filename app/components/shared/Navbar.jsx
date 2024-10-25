@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,14 +19,14 @@ const Navbar = () => {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <a href="/" className="bg-darkblue bg-opacity-30 text-black px-3 py-2 rounded-full text-sm font-medium">Home</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">About</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Programs</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Why Choose us</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Parents</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Gallery</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Fee & Key Dates</a>
-                <a href="#" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Contact Us</a>
+                <Link href="/" className="bg-darkblue bg-opacity-30 text-black px-3 py-2 rounded-full text-sm font-medium">Home</Link>
+                <Link href="/about" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">About</Link>
+                <Link href="/programs" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Programs</Link>
+                <Link href="/why-choose-us" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Why Choose Us</Link>
+                <Link href="/parents" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Parents</Link>
+                <Link href="/gallery" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Gallery</Link>
+                <Link href="/fee-key-dates" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Fee & Key Dates</Link>
+                <Link href="/contact" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Contact Us</Link>
               </div>
             </div>
           </div>
@@ -33,7 +34,7 @@ const Navbar = () => {
             <button className="bg-darkblue text-white w-[157px] h-[41px] rounded-full text-sm font-medium">Register Now</button>
           </div>
           <div className="-mr-2 flex md:hidden">
-            <button onClick={toggleMenu} type="button" className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+            <button onClick={toggleMenu} type="button" className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded={isMenuOpen}>
               <span className="sr-only">Open main menu</span>
               {!isMenuOpen ? (
                 <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -52,14 +53,14 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="#" className="bg-blue-100 text-black block px-3 py-2 rounded-md text-base font-medium">Home</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">About</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Programs</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Why Choose us</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Parents</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Gallery</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Fee & Key Dates</a>
-            <a href="#" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Contact Us</a>
+            <Link href="/" className="bg-blue-100 text-black block px-3 py-2 rounded-md text-base font-medium">Home</Link>
+            <Link href="/about" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">About</Link>
+            <Link href="/programs" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Programs</Link>
+            <Link href="/why-choose-us" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Why Choose Us</Link>
+            <Link href="/parents" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Parents</Link>
+            <Link href="/gallery" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Gallery</Link>
+            <Link href="/fee-key-dates" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Fee & Key Dates</Link>
+            <Link href="/contact" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Contact Us</Link>
             <button className="mt-2 w-1/3 bg-darkblue text-white px-4 py-2 rounded-md text-sm font-medium">Register Now</button>
           </div>
         </div>
