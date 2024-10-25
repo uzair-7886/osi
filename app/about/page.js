@@ -7,6 +7,7 @@ import MethodologySection from "../components/About/Methodology";
 import Tutors from "../components/About/Tutors";
 import Deans from "../components/About/Deans";
 
+// lets see
 function page() {
     return (
         <>
