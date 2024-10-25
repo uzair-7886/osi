@@ -3,7 +3,8 @@ import testimonials from "./testimonials"
 import faq from "./faq"
 import imageSlideshow from "./imageSlideshow"
 import subjects from "./subjects"
-import Subjects from "@/app/components/home/Subjects"
+import course from "./course"
+
 
 export const schema = {
   types: [
@@ -11,6 +12,7 @@ export const schema = {
     testimonials,
     faq,
     imageSlideshow,
-    subjects
+    subjects,
+    course,
   ],
 }
