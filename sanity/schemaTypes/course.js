@@ -1,12 +1,12 @@
 export default {
-    name: 'subject',
+    name: 'course',
     type: 'document',
-    title: 'Subject',
+    title: 'Course',
     fields: [
         {
             name: 'name',
             type: 'string',
-            title: 'Subject Name',
+            title: 'Course Name',
             validation: Rule => Rule.required().min(3).max(50)
         },
         {
@@ -15,10 +15,12 @@ export default {
             title: 'Description'
         },
         {
-            name: 'courses',
-            type: 'array',
-            title: 'Courses',
-            of: [{ type: 'reference', to: [{ type: 'course' }] }]
+            name: 'image',
+            type: 'image',
+            title: 'Course Image',
+            options: {
+                hotspot: true
+            }
         }
     ]
 }
