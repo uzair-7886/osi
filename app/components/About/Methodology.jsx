@@ -1,4 +1,5 @@
 import React from 'react';
+// lets see
 
 // Main component for the methodology section
 const MethodologySection = () => {

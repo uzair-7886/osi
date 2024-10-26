@@ -1,11 +1,12 @@
 import React from 'react';
+// lets see
 
 const OurTeam = () => {
     return (
         <div className="bg-gray-200 py-16 px-4">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
                 {/* Text Section */}
-                <div className="md:w-1/2">
+                <div className="md:w-6/12">
                     <h2 className="text-orange text-lg font-semibold uppercase mb-2">Our Team</h2>
                     <h3 className="text-3xl font-bold text-gray-800 mb-6">
                         The Oxford Summer Institute is led by a team with over ten years of experience in organizing premier summer programs
@@ -18,30 +19,30 @@ const OurTeam = () => {
                 </div>
 
                 {/* Image Section */}
-                <div className="md:w-1/2 flex flex-col md:flex-row items-center md:items-start justify-between md:ml-10">
+                <div className="md:w-5/12 pt-12 flex flex-col md:flex-row items-center md:items-start justify-between md:ml-10">
                     {/* Large Image on the Left */}
-                    <div className="bg-orange-500 p-4 rounded-lg flex justify-center md:self-end w-full md:w-[300px] h-[500px]">
+                    <div className="bg-orange-500 p-4 rounded-3xl flex justify-center md:self-end w-full md:w-[300px] h-[500px]">
                         <img
                             src="/images/team1.png"
                             alt="Team Member 1"
-                            className="rounded-lg object-cover w-full h-full"
+                            className="rounded-3xl object-cover w-full h-full"
                         />
                     </div>
 
                     {/* Smaller Images on the Right */}
-                    <div className="flex flex-col space-y-6 md:-mt-20 md:ml-6">
-                        <div className="bg-blue-600 p-4 rounded-lg flex justify-center w-[215px] h-[275px]">
+                    <div className="flex flex-col space-y-6 md:-mt-20">
+                        <div className="bg-blue-600 rounded-3xl flex justify-center md:self-end w-full md:w-[215px] h-[275px]">
                             <img
                                 src="/images/team2.png"
                                 alt="Team Member 2"
-                                className="rounded-lg object-cover w-full h-full"
+                                className="rounded-3xl object-cover w-full h-full"
                             />
                         </div>
-                        <div className="bg-lime-500 p-4 rounded-lg flex justify-center w-[215px] h-[175px]">
+                        <div className="bg-lime-500 rounded-3xl flex justify-center md:self-end w-full md:w-[215px] h-[175px]">
                             <img
                                 src="/images/team3.png"
                                 alt="Team Member 3"
-                                className="rounded-lg object-cover w-full h-full"
+                                className="rounded-3xl object-cover w-full h-full"
                             />
                         </div>
                     </div>
