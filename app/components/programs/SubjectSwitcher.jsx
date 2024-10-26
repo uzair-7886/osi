@@ -27,8 +27,6 @@ const SubjectsSwitcher = () => {
       setExpandedCourse(null);
     } else {
       setExpandedCourse(course);
-    }
-    if (window.innerWidth < 640) {
       setTimeout(() => {
         const expandedView = document.getElementById('expanded-course');
         expandedView?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -95,7 +93,7 @@ const SubjectsSwitcher = () => {
   return (
     <div className="w-full">
       <div className="bg-gray-100 border-b relative">
-        <div className="container mx-auto relative">
+        <div className="container mx-auto relative flex justify-center items-center">
           <button 
             onClick={() => scrollNav('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white transition-colors md:hidden"
@@ -108,7 +106,7 @@ const SubjectsSwitcher = () => {
           >
             <ChevronRight className="w-5 h-5" />
           </button>
-                    <nav className="subjects-nav flex overflow-x-auto scrollbar-hide relative">
+          <nav className="subjects-nav flex overflow-x-auto scrollbar-hide relative">
             {subjects.map((subject) => (
               <button
                 key={subject.name}
@@ -151,7 +149,7 @@ const SubjectsSwitcher = () => {
             }`}
           >
             {expandedCourse && (
-              <div className="relative bg-white rounded-lg  p-4 sm:p-6 mb-8">
+              <div className="relative bg-white rounded-lg p-4 sm:p-6 mb-8">
                 <button
                   onClick={() => setExpandedCourse(null)}
                   className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300"
@@ -173,40 +171,41 @@ const SubjectsSwitcher = () => {
               </div>
             )}
           </div>
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-  {activeSubject.courses?.map((course) => (
-    <div
-      key={course.name}
-      onClick={() => handleCourseClick(course)}
-      className={`transform transition-all duration-300 hover:scale-[1.02] ${
-        expandedCourse?.name === course.name ? 'rounded-tr-2xl' : ''
-      }`}
-    >
-      <div className="cursor-pointer ">
-        {course.image && (
-          <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-2xl`}>
-            <img
-              src={urlFor(course.image)
-                .width(340)
-                .height(280)
-                .quality(90)
-                .url()}
-              alt={course.name}
-              className={`w-full h-full object-cover shadow-lg transition-transform duration-300 hover:scale-105 ${
-                expandedCourse?.name === course.name ? 'rounded-tr-2xl' : ''
-              }`}
-            />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {activeSubject.courses?.map((course) => (
+              <div
+                key={course.name}
+                onClick={() => handleCourseClick(course)}
+                className={`transform transition-all duration-300 hover:scale-[1.02] ${
+                  expandedCourse?.name === course.name ? 'rounded-tr-2xl' : ''
+                }`}
+              >
+                <div className="cursor-pointer">
+                  {course.image && (
+                    <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-2xl`}>
+                      <img
+                        src={urlFor(course.image)
+                          .width(340)
+                          .height(280)
+                          .quality(90)
+                          .url()}
+                        alt={course.name}
+                        className={`w-full h-full object-cover shadow-lg transition-transform duration-300 hover:scale-105 ${
+                          expandedCourse?.name === course.name ? 'rounded-tr-2xl' : ''
+                        }`}
+                      />
+                    </div>
+                  )}
+                  <div className="py-3 sm:py-4 bg-white rounded-2xl">
+                    <h3 className="text-lg sm:text-xl font-medium text-orange">
+                      {course.name}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-        <div className="py-3 sm:py-4 bg-white rounded-2xl">
-          <h3 className="text-lg sm:text-xl font-medium text-orange">
-            {course.name}
-          </h3>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
         </div>
       </div>
     </div>
