@@ -16,8 +16,8 @@ const CheckoutPage = ({ amount }) => {
     const [errorMessage, setErrorMessage] = useState();
     const [clientSecret, setClientSecret] = useState("");
     const [loading, setLoading] = useState(false);
-    const [userId, setUserId] = useState(""); // New state for user_id
-    const [submittedUserId, setSubmittedUserId] = useState(""); // State to store submitted user_id
+    const [userId, setUserId] = useState("");
+    const [submittedUserId, setSubmittedUserId] = useState("");
 
     // Fetch the client secret from your server
     useEffect(() => {
@@ -34,15 +34,12 @@ const CheckoutPage = ({ amount }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true);
 
         if (!stripe || !elements) {
             return;
         }
 
-        // Store the submitted user_id
-        setSubmittedUserId(userId);
-
+        // Call elements.submit() immediately before stripe.confirmPayment()
         const { error: submitError } = await elements.submit();
 
         if (submitError) {
@@ -51,24 +48,44 @@ const CheckoutPage = ({ amount }) => {
             return;
         }
 
-        const { error } = await stripe.confirmPayment({
+        // Now call stripe.confirmPayment()
+        const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
             clientSecret,
             confirmParams: {
                 return_url: `http://localhost:3000/payment-success?amount=${amount}`,
             },
+            redirect: "if_required",
         });
 
         if (error) {
             // Show error to your customer
             setErrorMessage(error.message);
-        } else {
-            // Payment successful
-            // You can handle additional logic here if needed
+            setLoading(false);
+            return;
         }
 
-        setLoading(false);
+        if (paymentIntent && paymentIntent.status === "succeeded") {
+            // Payment successful
+            // Trigger GA event
+            if (typeof window !== "undefined" && window.gtag) {
+                window.gtag("event", "payment_complete", {
+                    value: amount,
+                    currency: "USD",
+                });
+            }
+            // Redirect to success page
+            window.location.href = `/payment-success?amount=${amount}`;
+        } else if (paymentIntent && paymentIntent.status === "requires_action") {
+            // Additional authentication is required
+            // Stripe will handle the redirect to the return_url
+        } else {
+            // Handle other statuses
+            setErrorMessage("Payment failed. Please try again.");
+            setLoading(false);
+        }
     };
+
 
     if (!clientSecret || !stripe || !elements) {
         return (
