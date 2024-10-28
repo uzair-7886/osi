@@ -4,6 +4,9 @@ import faq from "./faq"
 import imageSlideshow from "./imageSlideshow"
 import subjects from "./subjects"
 import course from "./course"
+import programs from "./programs"
+import learningGrid from "./learningGrid"
+import livingGrid from "./livingGrid"
 
 
 export const schema = {
@@ -14,5 +17,8 @@ export const schema = {
     imageSlideshow,
     subjects,
     course,
+    programs,
+    learningGrid,
+    livingGrid,
   ],
 }

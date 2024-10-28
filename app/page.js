@@ -8,8 +8,8 @@ import RegisterHeroSection from "./components/home/RegisterHeroSection";
 import Subjects from "./components/home/Subjects";
 import SummerBanner from "./components/shared/SummerBanner";
 import TestimonialsSlider from "./components/home/TestimonialsSlider";
-import { LearningGrid } from "./components/home/ImagesGrid";
-import { LivingGrid } from "./components/home/ImagesGrid";
+import { LearningGrid } from "./components/home/LearningGrid";
+import LivingGrid from "./components/home/LivingGrid";
 
 // const heroSectionQuery = `
 //   *[_type == "heroSection"][0] {
