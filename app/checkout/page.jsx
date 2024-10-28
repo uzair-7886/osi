@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import CheckoutPage from "../components/CheckoutPage";
 import convertToSubcurrency from "../lib/convertToSubcurrency";
 import { Elements } from "@stripe/react-stripe-js";
@@ -26,55 +25,34 @@ export default function Home() {
     // Set the amount to the course fee
     const amount = courseInfo.fee;
 
-    useEffect(() => {
-        // Add Google Analytics script
-        const script1 = document.createElement("script");
-        script1.async = true;
-        script1.src = "https://www.googletagmanager.com/gtag/js?id=G-6WFWQMG9DH";
-        document.head.appendChild(script1);
-
-        const script2 = document.createElement("script");
-        script2.innerHTML = `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6WFWQMG9DH');
-        `;
-        document.head.appendChild(script2);
-
-        // Clean up the scripts when the component unmounts
-        return () => {
-            document.head.removeChild(script1);
-            document.head.removeChild(script2);
-        };
-    }, []);
-
     return (
-        <main className="flex h-screen">
+        <main className="flex flex-col md:flex-row h-screen bg-gray-50">
             {/* Left Half */}
-            <div className="w-full md:w-1/2 p-5 text-white bg-gradient-to-tr from-blue-500 to-purple-500 flex flex-col items-center justify-center">
-                <div className="mb-10 text-center">
-                    <h1 className="text-4xl font-extrabold mb-4">{courseInfo.title}</h1>
-                    <h2 className="text-2xl mb-4">Instructor: {courseInfo.instructor}</h2>
-                    <p className="text-lg mb-4">{courseInfo.description}</p>
-                    <p className="text-lg mb-2">Schedule: {courseInfo.schedule}</p>
-                    <p className="text-lg mb-2">Location: {courseInfo.location}</p>
-                    <p className="text-lg font-bold mt-4">Course Fee: ${courseInfo.fee}</p>
+            <div className="w-full md:w-1/2 p-6 md:p-10 bg-gradient-to-tr from-blue-600 to-purple-600 text-white flex flex-col items-center justify-center">
+                <div className="mb-10 text-center max-w-lg">
+                    <h1 className="text-3xl md:text-4xl font-extrabold mb-4">{courseInfo.title}</h1>
+                    <h2 className="text-xl md:text-2xl mb-4">Instructor: {courseInfo.instructor}</h2>
+                    <p className="text-sm md:text-lg mb-4">{courseInfo.description}</p>
+                    <p className="text-sm md:text-lg mb-2">Schedule: {courseInfo.schedule}</p>
+                    <p className="text-sm md:text-lg mb-2">Location: {courseInfo.location}</p>
+                    <p className="text-lg md:text-xl font-bold mt-6">Course Fee: ${courseInfo.fee}</p>
                 </div>
             </div>
 
             {/* Right Half */}
-            <div className="w-full md:w-1/2 p-5 flex flex-col items-center justify-center">
-                <Elements
-                    stripe={stripePromise}
-                    options={{
-                        mode: "payment",
-                        amount: convertToSubcurrency(amount),
-                        currency: "usd",
-                    }}
-                >
-                    <CheckoutPage amount={amount} />
-                </Elements>
+            <div className="w-full md:w-1/2 p-6 md:p-10 flex items-center justify-center bg-white shadow-md rounded-lg md:rounded-none overflow-hidden">
+                <div className="w-full max-w-md mx-auto h-full overflow-y-auto">
+                    <Elements
+                        stripe={stripePromise}
+                        options={{
+                            mode: "payment",
+                            amount: convertToSubcurrency(amount),
+                            currency: "usd",
+                        }}
+                    >
+                        <CheckoutPage amount={amount} />
+                    </Elements>
+                </div>
             </div>
         </main>
     );

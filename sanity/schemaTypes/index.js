@@ -10,6 +10,8 @@ import livingGrid from "./livingGrid"
 import descriptions from "./descriptions"
 import images from "./images"
 import methodologies from "./methodology"
+import enrolledUser from "./enrolledUser"
+import payment from "./payment"
 
 
 export const schema = {
@@ -25,6 +27,8 @@ export const schema = {
     livingGrid,
     descriptions,
     images,
-    methodologies
+    methodologies,
+    enrolledUser,
+    payment
   ],
 }

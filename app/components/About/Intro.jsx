@@ -1,10 +1,25 @@
-'use client'
-import React from 'react';
-// lets see
+"use client";
 
-const DownloadBrochureHeroSection = ({ data }) => {
+import React from 'react';
+import { client } from "@/sanity/lib/client";
+import { useEffect, useState } from "react";
+
+const DownloadBrochureHeroSection = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        client
+            .fetch(`*[_type == "descriptions" && heading == "OXFORD CENTRE FOR LEADERSHIP"][0]`)
+            .then((introData) => {
+                setData(introData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     if (!data) {
-        return null; // or display a loading state or an error message
+        return <div>Loading...</div>;
     }
     return (
         <section className="relative w-full py-16 px-16 md:py-24 md:px-24"> {/* Reduced padding */}

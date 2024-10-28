@@ -1,10 +1,34 @@
+"use client";
+
 import React from 'react';
 import TutorCard from './TutorCard';
 import { urlFor } from '@/sanity/lib/image'; // Import the image URL builder
+import { client } from "@/sanity/lib/client";
+import { useEffect, useState } from "react";
 
-const TutorsSection = ({ data }) => {
+const TutorsSection = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        client
+            .fetch(`*[_type == "descriptions" && heading == "Why OCI?"][0]{
+        ...,
+        images[]->{
+          name,
+          description,
+          image
+        }
+      }`)
+            .then((tutorsData) => {
+                setData(tutorsData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     if (!data) {
-        return null; // or display a loading state or an error message
+        return;
     }
 
     // Destructure data for easier access

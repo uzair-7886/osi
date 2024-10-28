@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "../lib/convertToSubcurrency";
+import { client } from "@/sanity/lib/client";
 
 const CheckoutPage = ({ amount }) => {
     const stripe = useStripe();
@@ -13,29 +14,21 @@ const CheckoutPage = ({ amount }) => {
     const [clientSecret, setClientSecret] = useState("");
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState("");
-    const [submittedUserId, setSubmittedUserId] = useState("");
 
-    // Load Google Analytics script in this component only
+    // Trigger 'open_checkout_page' event when the component loads
     useEffect(() => {
-        const script1 = document.createElement("script");
-        script1.async = true;
-        script1.src = "https://www.googletagmanager.com/gtag/js?id=G-6WFWQMG9DH";
-        document.head.appendChild(script1);
+        if (typeof window !== "undefined" && window.gtag) {
+            console.log("Triggering 'open_checkout_page' event");
+            window.gtag("event", "open_checkout_page");
+        }
+    }, []);
 
-        const script2 = document.createElement("script");
-        script2.innerHTML = `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6WFWQMG9DH');
-        `;
-        document.head.appendChild(script2);
-
-        // Clean up scripts when component unmounts
-        return () => {
-            document.head.removeChild(script1);
-            document.head.removeChild(script2);
-        };
+    useEffect(() => {
+        // Retrieve userId from local storage
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
     }, []);
 
     // Fetch the client secret from your server
@@ -86,8 +79,9 @@ const CheckoutPage = ({ amount }) => {
 
         if (paymentIntent && paymentIntent.status === "succeeded") {
             // Payment successful
-            // Trigger GA event
+            // Trigger 'payment_complete' event
             if (typeof window !== "undefined" && window.gtag) {
+                console.log("Triggering 'payment_complete' event");
                 window.gtag("event", "payment_complete", {
                     value: amount,
                     currency: "USD",
@@ -95,6 +89,15 @@ const CheckoutPage = ({ amount }) => {
             } else {
                 console.error("Google Analytics is not loaded yet.");
             }
+
+            // Store successful payment in Sanity
+            await client.create({
+                _type: 'payment',
+                userId: userId,
+                amount: amount,
+                timestamp: new Date().toISOString(),
+            });
+
             // Redirect to success page
             window.location.href = `/payment-success?amount=${amount}`;
         } else if (paymentIntent && paymentIntent.status === "requires_action") {
@@ -145,13 +148,6 @@ const CheckoutPage = ({ amount }) => {
             >
                 {!loading ? `Pay $${amount}` : "Processing..."}
             </button>
-
-            {/* Display the submitted user_id */}
-            {submittedUserId && (
-                <div className="mt-4 text-green-600">
-                    <p>User ID submitted: {submittedUserId}</p>
-                </div>
-            )}
         </form>
     );
 };
