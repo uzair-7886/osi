@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-    useStripe,
-    useElements,
-    PaymentElement,
-} from "@stripe/react-stripe-js";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "../lib/convertToSubcurrency";
 
 const CheckoutPage = ({ amount }) => {
@@ -18,6 +14,29 @@ const CheckoutPage = ({ amount }) => {
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState("");
     const [submittedUserId, setSubmittedUserId] = useState("");
+
+    // Load Google Analytics script in this component only
+    useEffect(() => {
+        const script1 = document.createElement("script");
+        script1.async = true;
+        script1.src = "https://www.googletagmanager.com/gtag/js?id=G-6WFWQMG9DH";
+        document.head.appendChild(script1);
+
+        const script2 = document.createElement("script");
+        script2.innerHTML = `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6WFWQMG9DH');
+        `;
+        document.head.appendChild(script2);
+
+        // Clean up scripts when component unmounts
+        return () => {
+            document.head.removeChild(script1);
+            document.head.removeChild(script2);
+        };
+    }, []);
 
     // Fetch the client secret from your server
     useEffect(() => {
@@ -73,6 +92,8 @@ const CheckoutPage = ({ amount }) => {
                     value: amount,
                     currency: "USD",
                 });
+            } else {
+                console.error("Google Analytics is not loaded yet.");
             }
             // Redirect to success page
             window.location.href = `/payment-success?amount=${amount}`;
@@ -85,7 +106,6 @@ const CheckoutPage = ({ amount }) => {
             setLoading(false);
         }
     };
-
 
     if (!clientSecret || !stripe || !elements) {
         return (
