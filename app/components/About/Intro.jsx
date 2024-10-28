@@ -2,13 +2,16 @@
 import React from 'react';
 // lets see
 
-const DownloadBrochureHeroSection = () => {
+const DownloadBrochureHeroSection = ({ data }) => {
+    if (!data) {
+        return null; // or display a loading state or an error message
+    }
     return (
-        <section className="relative w-full py-16 px-4"> {/* Reduced padding */}
+        <section className="relative w-full py-16 px-16 md:py-24 md:px-24"> {/* Reduced padding */}
             <div className="max-w-7xl mx-auto md:flex-row items-center">
-                <h2 className='text-center text-orange text-lg font-semibold'>OXFORD CENTRE FOR LEADERSHIP</h2>
+                <h2 className='text-center text-orange text-lg font-semibold'>{data.heading}</h2>
                 <h1 className="text-center mb-6 text-[26px] font-semibold text-gray-900">
-                    Oxford Summer Courses
+                    {data.sub_heading}
                 </h1>
 
                 <p className="text-base text-black mx-auto">

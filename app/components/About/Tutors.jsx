@@ -1,51 +1,36 @@
 import React from 'react';
 import TutorCard from './TutorCard';
-// lets see
+import { urlFor } from '@/sanity/lib/image'; // Import the image URL builder
 
-const TutorsSection = () => {
-    const tutors = [
-        {
-            name: 'Tutor Name',
-            description: 'Lorem ipsum dolor amet, consectetur adipiscing elit. Consectetur nascetur aptent donec porta posuere mattis iaculis. Nullam himenaeos facilisis interdum tempus eleifend.',
-            image: '/images/team3.png', // Replace with actual image path
-        },
-        {
-            name: 'Tutor Name',
-            description: 'Lorem ipsum dolor amet, consectetur adipiscing elit. Consectetur nascetur aptent donec porta posuere mattis iaculis. Nullam himenaeos facilisis interdum tempus eleifend.',
-            image: '/images/team3.png', // Replace with actual image path
-        },
-        {
-            name: 'Tutor Name',
-            description: 'Lorem ipsum dolor amet, consectetur adipiscing elit. Consectetur nascetur aptent donec porta posuere mattis iaculis. Nullam himenaeos facilisis interdum tempus eleifend.',
-            image: '/images/team3.png', // Replace with actual image path
-        },
-        {
-            name: 'Tutor Name',
-            description: 'Lorem ipsum dolor amet, consectetur adipiscing elit. Consectetur nascetur aptent donec porta posuere mattis iaculis. Nullam himenaeos facilisis interdum tempus eleifend.',
-            image: '/images/team3.png', // Replace with actual image path
-        },
-    ];
+const TutorsSection = ({ data }) => {
+    if (!data) {
+        return null; // or display a loading state or an error message
+    }
+
+    // Destructure data for easier access
+    const { sub_heading, description, images } = data;
 
     return (
-        <section className="bg-gray-200 py-16 px-4">
-            <div className="max-w-7xl mx-auto text-center mb-12">
+        <section className="bg-gray-200 relative w-full py-16 md:py-24">
+            <div className="text-center mb-12 px-16 md:px-24">
                 <h2 className="text-orange uppercase tracking-widest text-lg font-bold">Why OCI?</h2>
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">Tutors</h1>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                    The Oxford Summer Institute stands out for its unique blend of academic rigor, cultural immersion, and life-changing experiences.
-                    Here's why students choose OSI:
-                </p>
+                <h1 className="text-3xl font-bold text-gray-800 mb-4">{sub_heading}</h1>
+                <p className="text-gray-600 text-lg leading-relaxed">{description}</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 py-4 px-16">
-                {tutors.map((tutor, index) => (
-                    <TutorCard
-                        key={index}
-                        name={tutor.name}
-                        description={tutor.description}
-                        image={tutor.image}
-                    />
-                ))}
+                {images && images.length > 0 ? (
+                    images.map((image, index) => (
+                        <TutorCard
+                            key={index}
+                            name={image.name}
+                            description={image.description}
+                            image={urlFor(image.image).url()}
+                        />
+                    ))
+                ) : (
+                    <p>No tutors available.</p>
+                )}
             </div>
         </section>
     );

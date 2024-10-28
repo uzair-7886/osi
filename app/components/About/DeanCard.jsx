@@ -3,13 +3,13 @@ import React from 'react';
 
 const DeanCard = ({ name, description, image }) => {
     return (
-        <div className="relative bg-white rounded-xl overflow-hidden">
+        <div className="relative bg-white rounded-2xl overflow-hidden">
             {/* Dean Image */}
-            <div className="relative h-80">
+            <div className="relative h-80 bg-white">
                 <img
                     src={image}
                     alt={name}
-                    className="absolute top-0 right-0 w-4x h-full object-cover transform rounded-xl"
+                    className="absolute top-0 right-0 w-4x h-full object-cover transform rounded-2xl bg-white"
                 />
             </div>
 
