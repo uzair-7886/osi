@@ -1,11 +1,36 @@
-// components/About/MethodologySection.jsx
+"use client";
 
 import React from 'react';
 import { urlFor } from '@/sanity/lib/image'; // Ensure the correct path
+import { client } from "@/sanity/lib/client";
+import { useEffect, useState } from "react";
 
-const MethodologySection = ({ data }) => {
+const MethodologySection = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        client
+            .fetch(`*[_type == "descriptions" && lower(heading) == "our methodology"][0]{ 
+        ...,
+        images[]->{
+          name,
+          image
+        },
+        methodologies[]->{
+          title,
+          description
+        }
+      }`)
+            .then((methodologyData) => {
+                setData(methodologyData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     if (!data) {
-        return null; // Or display a loading indicator
+        return;
     }
 
     const { sub_heading, description, methodologies, images } = data;

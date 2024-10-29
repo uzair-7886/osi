@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-    useStripe,
-    useElements,
-    PaymentElement,
-} from "@stripe/react-stripe-js";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "../lib/convertToSubcurrency";
+import { client } from "@/sanity/lib/client";
 
 const CheckoutPage = ({ amount }) => {
     const stripe = useStripe();
@@ -16,8 +13,23 @@ const CheckoutPage = ({ amount }) => {
     const [errorMessage, setErrorMessage] = useState();
     const [clientSecret, setClientSecret] = useState("");
     const [loading, setLoading] = useState(false);
-    const [userId, setUserId] = useState(""); // New state for user_id
-    const [submittedUserId, setSubmittedUserId] = useState(""); // State to store submitted user_id
+    const [userId, setUserId] = useState("");
+
+    // Trigger 'open_checkout_page' event when the component loads
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.gtag) {
+            console.log("Triggering 'open_checkout_page' event");
+            window.gtag("event", "open_checkout_page");
+        }
+    }, []);
+
+    useEffect(() => {
+        // Retrieve userId from local storage
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
 
     // Fetch the client secret from your server
     useEffect(() => {
@@ -34,15 +46,12 @@ const CheckoutPage = ({ amount }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setLoading(true);
 
         if (!stripe || !elements) {
             return;
         }
 
-        // Store the submitted user_id
-        setSubmittedUserId(userId);
-
+        // Call elements.submit() immediately before stripe.confirmPayment()
         const { error: submitError } = await elements.submit();
 
         if (submitError) {
@@ -51,23 +60,54 @@ const CheckoutPage = ({ amount }) => {
             return;
         }
 
-        const { error } = await stripe.confirmPayment({
+        // Now call stripe.confirmPayment()
+        const { error, paymentIntent } = await stripe.confirmPayment({
             elements,
             clientSecret,
             confirmParams: {
                 return_url: `http://localhost:3000/payment-success?amount=${amount}`,
             },
+            redirect: "if_required",
         });
 
         if (error) {
             // Show error to your customer
             setErrorMessage(error.message);
-        } else {
-            // Payment successful
-            // You can handle additional logic here if needed
+            setLoading(false);
+            return;
         }
 
-        setLoading(false);
+        if (paymentIntent && paymentIntent.status === "succeeded") {
+            // Payment successful
+            // Trigger 'payment_complete' event
+            if (typeof window !== "undefined" && window.gtag) {
+                console.log("Triggering 'payment_complete' event");
+                window.gtag("event", "payment_complete", {
+                    value: amount,
+                    currency: "USD",
+                });
+            } else {
+                console.error("Google Analytics is not loaded yet.");
+            }
+
+            // Store successful payment in Sanity
+            await client.create({
+                _type: 'payment',
+                userId: userId,
+                amount: amount,
+                timestamp: new Date().toISOString(),
+            });
+
+            // Redirect to success page
+            window.location.href = `/payment-success?amount=${amount}`;
+        } else if (paymentIntent && paymentIntent.status === "requires_action") {
+            // Additional authentication is required
+            // Stripe will handle the redirect to the return_url
+        } else {
+            // Handle other statuses
+            setErrorMessage("Payment failed. Please try again.");
+            setLoading(false);
+        }
     };
 
     if (!clientSecret || !stripe || !elements) {
@@ -108,13 +148,6 @@ const CheckoutPage = ({ amount }) => {
             >
                 {!loading ? `Pay $${amount}` : "Processing..."}
             </button>
-
-            {/* Display the submitted user_id */}
-            {submittedUserId && (
-                <div className="mt-4 text-green-600">
-                    <p>User ID submitted: {submittedUserId}</p>
-                </div>
-            )}
         </form>
     );
 };

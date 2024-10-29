@@ -1,9 +1,32 @@
-import React from 'react';
-import { urlFor } from '@/sanity/lib/image'; 
+"use client";
 
-const OurTeam = ({ data }) => {
+import React from 'react';
+import { urlFor } from '@/sanity/lib/image'; // Ensure the correct path
+import { client } from "@/sanity/lib/client";
+import { useEffect, useState } from "react";
+
+const OurTeam = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        client
+            .fetch(`*[_type == "descriptions" && heading == "OUR TEAM"][0]{
+        ...,
+        images[]->{
+          name,
+          image
+        }
+      }`)
+            .then((teamData) => {
+                setData(teamData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     if (!data) {
-        return null; // or display a loading state or an error message
+        return;
     }
 
     // Destructure data for easier access

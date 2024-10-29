@@ -1,10 +1,34 @@
+"use client";
+
 import React from 'react';
 import DeanCard from './DeanCard';
 import { urlFor } from '@/sanity/lib/image'; // Import the image URL builder
+import { client } from "@/sanity/lib/client";
+import { useEffect, useState } from "react";
 
-const DeansSection = ({ data }) => {
+const DeansSection = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        client
+            .fetch(`*[_type == "descriptions" && sub_heading == "Deans"][0]{
+        ...,
+        images[]->{
+          name,
+          description,
+          image
+        }
+      }`)
+            .then((deansData) => {
+                setData(deansData);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     if (!data) {
-        return null; // or display a loading state or an error message
+        return;
     }
 
     // Destructure data for easier access
