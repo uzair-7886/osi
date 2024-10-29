@@ -16,6 +16,8 @@ import { category } from "./category"
 import { blockContent } from "./blockContent"
 import enrolledUser from "./enrolledUser"
 import payment from "./payment"
+import activities from "./activities"
+import activity from "./activity"
 
 export const schema = {
   types: [
@@ -36,6 +38,8 @@ export const schema = {
     category,
     blockContent,
     enrolledUser,
-    payment
+    payment,
+    activities,
+    activity,
   ],
 }
