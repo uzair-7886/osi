@@ -2,13 +2,13 @@
 import React from 'react'
 import HeroBanner from '../components/shared/HeroBanner'
 import SummerBanner from '../components/shared/SummerBanner'
-import OSIActivities from '../components/OSIActivities'
+import OSIFacilities from '../components/OSIFacilities'
 
 function page() {
   return (
     <>
-        <HeroBanner text="Activities"/>
-        <OSIActivities/>
+        <HeroBanner text="Facilities"/>
+        <OSIFacilities/>
         <SummerBanner/>
     </>
   )

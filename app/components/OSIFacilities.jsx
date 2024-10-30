@@ -3,11 +3,11 @@ import React, { useState, useEffect } from "react";
 import { client } from "@/sanity/lib/client";
 import ActivitySection from "./shared/ActivitySection";
 
-const activityQuery = `*[_type == "activities"] {
+const activityQuery = `*[_type == "facilities"] {
   _id,
   name,
   description,
-  activities[]-> {
+  facilities[]-> {
     name,
     subtitle,
     description,
@@ -15,7 +15,7 @@ const activityQuery = `*[_type == "activities"] {
   }
 }`;
 
-const OSIActivities = () => {
+const OSIFacilities = () => {
   const [activities, setActivities] = useState([]);
   const [activityTitle, setActivityTitle] = useState("");
   const [activityDescription, setActivityDescription] = useState("");
@@ -29,10 +29,10 @@ const OSIActivities = () => {
         if (data && data.length > 0) {
           setActivityTitle(data[0].name);
           setActivityDescription(data[0].description);
-          setActivities(data[0].activities);
+          setActivities(data[0].facilities);
         }
       } catch (err) {
-        setError("Failed to load activities. Please try again later.");
+        setError("Failed to load facilities. Please try again later.");
         console.error("Error fetching activities:", err);
       } finally {
         setIsLoading(false);
@@ -104,8 +104,9 @@ const OSIActivities = () => {
         </p>
       </div>
       <ActivitySection activities={activities} />
+      {/* {console.log(activities)} */}
     </div>
   );
 };
 
-export default OSIActivities;
+export default OSIFacilities;

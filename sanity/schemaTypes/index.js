@@ -18,10 +18,11 @@ import enrolledUser from "./enrolledUser"
 import payment from "./payment"
 import activities from "./activities"
 import activity from "./activity"
+import facilities from "./facilities"
+import facility from "./facility"
 
 export const schema = {
   types: [
-    blog,
     HeroSection,
     testimonials,
     faq,
@@ -31,15 +32,15 @@ export const schema = {
     programs,
     learningGrid,
     livingGrid,
+    activities,
+    facilities,
+    activity,
+    facility,
     descriptions,
     images,
     methodologies,
-    author,
-    category,
-    blockContent,
     enrolledUser,
     payment,
-    activities,
-    activity,
+    
   ],
 }
