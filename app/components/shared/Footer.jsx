@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="space-y-4">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-blue-900 rounded-full"></div>
-            <span className="ml-2 text-xl font-semibold">Oci</span>
+            <span className="ml-2 text-xl font-semibold">OSI</span>
           </div>
           <p className="text-gray-600 font-medium">1234 Abc Street</p>
           <p className="text-gray-600 font-medium">Oxford, UK</p>

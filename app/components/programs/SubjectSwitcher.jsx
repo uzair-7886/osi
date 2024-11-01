@@ -133,7 +133,7 @@ const SubjectsSwitcher = () => {
           <h2 className="text-2xl sm:text-4xl font-semibold text-gray-900 mb-4 sm:mb-6 transition-all duration-300">
             {activeSubject.name}
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 sm:mb-8 transition-all duration-300">
+          <p className="text-sm sm:text-base text-grey leading-relaxed mb-6 sm:mb-8 transition-all duration-300">
             {activeSubject.description}
           </p>
           <div className="text-center mb-8 sm:mb-12">

@@ -20,6 +20,7 @@ import activities from "./activities"
 import activity from "./activity"
 import facilities from "./facilities"
 import facility from "./facility"
+import whyosi from "./whyosi"
 
 export const schema = {
   types: [
@@ -36,6 +37,7 @@ export const schema = {
     facilities,
     activity,
     facility,
+    whyosi,
     descriptions,
     images,
     methodologies,
