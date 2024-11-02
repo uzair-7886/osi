@@ -1,12 +1,18 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isActivePage = (path) => {
+    return pathname === path;
   };
 
   return (
@@ -19,14 +25,14 @@ const Navbar = () => {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <Link href="/" className="bg-darkblue bg-opacity-30 text-black px-3 py-2 rounded-full text-sm font-medium">Home</Link>
-                <Link href="/about" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">About</Link>
-                <Link href="/programs" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Programs</Link>
-                <Link href="/why-choose-us" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Why Choose Us</Link>
-                <Link href="/parents" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Parents</Link>
-                <Link href="/gallery" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Gallery</Link>
-                <Link href="/fee-key-dates" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Fee & Key Dates</Link>
-                <Link href="/contact" className="text-black hover:bg-gray-100 px-3 py-2 rounded-full text-sm font-medium">Contact Us</Link>
+                <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Home</Link>
+                <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>About</Link>
+                <Link href="/programs" className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Programs</Link>
+                <Link href="/why-choose-us" className={`${isActivePage('/why-choose-us') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Why Choose Us</Link>
+                <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Parents</Link>
+                <Link href="/gallery" className={`${isActivePage('/gallery') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Gallery</Link>
+                <Link href="/fee-key-dates" className={`${isActivePage('/fee-key-dates') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Fee & Key Dates</Link>
+                <Link href="/contact" className={`${isActivePage('/contact') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Contact Us</Link>
               </div>
             </div>
           </div>
@@ -53,14 +59,14 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/" className="bg-blue-100 text-black block px-3 py-2 rounded-md text-base font-medium">Home</Link>
-            <Link href="/about" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">About</Link>
-            <Link href="/programs" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Programs</Link>
-            <Link href="/why-choose-us" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Why Choose Us</Link>
-            <Link href="/parents" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Parents</Link>
-            <Link href="/gallery" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Gallery</Link>
-            <Link href="/fee-key-dates" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Fee & Key Dates</Link>
-            <Link href="/contact" className="text-black hover:bg-gray-100 block px-3 py-2 rounded-md text-base font-medium">Contact Us</Link>
+            <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Home</Link>
+            <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>About</Link>
+            <Link href="/programs" className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Programs</Link>
+            <Link href="/why-choose-us" className={`${isActivePage('/why-choose-us') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Why Choose Us</Link>
+            <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Parents</Link>
+            <Link href="/gallery" className={`${isActivePage('/gallery') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Gallery</Link>
+            <Link href="/fee-key-dates" className={`${isActivePage('/fee-key-dates') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Fee & Key Dates</Link>
+            <Link href="/contact" className={`${isActivePage('/contact') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black block px-3 py-2 rounded-md text-base font-medium`}>Contact Us</Link>
             <button className="mt-2 w-1/3 bg-darkblue text-white px-4 py-2 rounded-md text-sm font-medium">Register Now</button>
           </div>
         </div>

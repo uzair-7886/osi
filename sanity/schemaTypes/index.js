@@ -8,11 +8,20 @@ import programs from "./programs"
 import learningGrid from "./learningGrid"
 import livingGrid from "./livingGrid"
 import descriptions from "./descriptions"
-import images from "./images"
+import images from "./images.js"
 import methodologies from "./methodology"
+import blog from "./blog"
+import { author } from "./author"
+import { category } from "./category"
+import { blockContent } from "./blockContent"
 import enrolledUser from "./enrolledUser"
 import payment from "./payment"
-
+import activities from "./activities"
+import activity from "./activity"
+import facilities from "./facilities"
+import facility from "./facility"
+import whyosi from "./whyosi"
+import { faqSection } from "./faqpage"
 
 export const schema = {
   types: [
@@ -25,10 +34,16 @@ export const schema = {
     programs,
     learningGrid,
     livingGrid,
+    activities,
+    facilities,
+    activity,
+    facility,
+    whyosi,
+    faqSection,
     descriptions,
     images,
     methodologies,
     enrolledUser,
-    payment
+    payment,
   ],
 }
