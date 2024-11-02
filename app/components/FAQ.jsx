@@ -88,7 +88,7 @@ function FAQ() {
                                         <h3 className="text-3xl md:text-[40px] font-semibold mb-4">
                                             {section.subtitle}
                                         </h3>
-                                        <p className="text-grey">
+                                        <p className="text-grey text-justify">
                                             {section.description}
                                         </p>
                                     </div>
