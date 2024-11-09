@@ -14,6 +14,7 @@ export async function POST(req) {
         const { type, userId, formData } = await req.json();
         const recipientEmail = formData.email;
         const adminEmail = 'ajamil@datapulsetechnologies.org';
+        // const adminEmail = 'hahmed.bscs21seecs@seecs.edu.pk';
 
         if (type === 'enroll') {
             // Admin email for enrollment
