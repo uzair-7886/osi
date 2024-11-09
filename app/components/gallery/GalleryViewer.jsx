@@ -1,25 +1,10 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react';
+import { Expand, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useCallback, useEffect } from 'react';
 import { urlFor } from '@/sanity/lib/image';
-import { client } from '@/sanity/lib/client';
-import { ChevronRight, ChevronLeft, Expand, X } from 'lucide-react';
 
-const galleryQuery = `*[_type == "gallery"][0] {
-  title,
-  sections[] {
-    name,
-    description,
-    images[] {
-      image,
-      caption,
-      alt
-    }
-  }
-}`;
-
-const GalleryViewer = () => {
-  const [galleryData, setGalleryData] = useState(null);
-  const [activeSection, setActiveSection] = useState(null);
+export default function GalleryViewer({ initialData }) {
+  const [activeSection, setActiveSection] = useState(initialData.sections[0]);
   const [expandedImageIndex, setExpandedImageIndex] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -91,37 +76,6 @@ const GalleryViewer = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        const data = await client.fetch(galleryQuery);
-        if (data) {
-          setGalleryData(data);
-          setActiveSection(data.sections[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching gallery:", error);
-        setGalleryData(null);
-      }
-    };
-
-    fetchGallery();
-  }, []);
-
-  if (!galleryData) {
-    return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:py-12">
-        <div className="animate-pulse">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, index) => (
-              <div key={index} className="aspect-[4/3] bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full">
       <div className="bg-gray-100 border-b relative">
@@ -140,7 +94,7 @@ const GalleryViewer = () => {
           </button>
           
           <nav className="sections-nav flex overflow-x-auto scrollbar-hide relative">
-            {galleryData.sections.map((section) => (
+            {initialData.sections.map((section) => (
               <button
                 key={section.name}
                 onClick={() => {
@@ -248,6 +202,4 @@ const GalleryViewer = () => {
       </div>
     </div>
   );
-};
-
-export default GalleryViewer;
+}
