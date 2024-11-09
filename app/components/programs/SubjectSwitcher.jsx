@@ -118,7 +118,7 @@ const SubjectsSwitcher = () => {
                   ${
                     activeSubject.name === subject.name
                       ? 'text-orange border-b-2 border-orange'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'text-[#2B2B2B]'
                   }`}
               >
                 {subject.name.toUpperCase()}
@@ -159,7 +159,7 @@ const SubjectsSwitcher = () => {
                   <img 
                     src={urlFor(expandedCourse.image)} 
                     alt="" 
-                    className="w-full rounded-tr-2xl h-[180px] sm:h-[240px] object-cover shadow-lg mb-4"
+                    className="w-full rounded-tr-[35px] h-[180px] sm:h-[240px] object-cover shadow-lg mb-4"
                   />
                   <h3 className="text-lg sm:text-xl font-medium text-orange">
                     {expandedCourse.name}
@@ -183,11 +183,11 @@ const SubjectsSwitcher = () => {
               >
                 <div className="cursor-pointer">
                   {course.image && (
-                    <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-2xl`}>
+                    <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-[35px]`}>
                       <img
                         src={urlFor(course.image)
                           .width(340)
-                          .height(280)
+                          .height(240)
                           .quality(90)
                           .url()}
                         alt={course.name}
