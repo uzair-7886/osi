@@ -1,22 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { urlFor } from '@/sanity/lib/image';
-import { client } from '@/sanity/lib/client';
 import { ChevronRight, ChevronLeft, X } from 'lucide-react';
 
-const subjectjsquery = `*[_type == "subject"] {
-       name,
-       description,
-       "courses": courses[]-> {
-         name,
-         description,
-         image
-       }
-     }`;
-
-const SubjectsSwitcher = () => {
-  const [subjects, setSubjects] = useState([]);
-  const [activeSubject, setActiveSubject] = useState(subjects[0]);
+const SubjectsSwitcher = ({ initialData }) => {
+  const [activeSubject, setActiveSubject] = useState(initialData[0]);
   const [expandedCourse, setExpandedCourse] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isExpanding, setIsExpanding] = useState(false);
@@ -46,50 +34,6 @@ const SubjectsSwitcher = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const data = await client.fetch(subjectjsquery);
-        if (data) {
-          setSubjects(data);
-          setActiveSubject(data[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-        setSubjects([]);
-      }
-    };
-
-    fetchSubjects();
-  }, []);
-
-  if (!subjects.length) {
-    return (
-      <div className="w-full max-w-7xl mx-auto px-4 py-6 sm:py-12">
-        <div className="animate-pulse">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="h-4 sm:h-6 bg-gray-200 rounded w-1/3 sm:w-1/4 mx-auto mb-2"></div>
-            <div className="h-8 sm:h-10 bg-gray-200 rounded w-2/3 sm:w-1/2 mx-auto"></div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="transition-all duration-300">
-                <div className="relative overflow-hidden rounded-tr-lg">
-                  <div className="h-40 sm:h-48 bg-gray-200 rounded-md mb-4"></div>
-                  <div className="p-3 sm:p-4 bg-white rounded-2xl">
-                    <div className="h-5 sm:h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2 mb-3 sm:mb-4"></div>
-                    <div className="h-12 sm:h-16 bg-gray-200 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full">
       <div className="bg-gray-100 border-b relative">
@@ -107,7 +51,7 @@ const SubjectsSwitcher = () => {
             <ChevronRight className="w-5 h-5" />
           </button>
           <nav className="subjects-nav flex overflow-x-auto scrollbar-hide relative">
-            {subjects.map((subject) => (
+            {initialData.map((subject) => (
               <button
                 key={subject.name}
                 onClick={() => {
@@ -118,7 +62,7 @@ const SubjectsSwitcher = () => {
                   ${
                     activeSubject.name === subject.name
                       ? 'text-orange border-b-2 border-orange'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'text-[#2B2B2B]'
                   }`}
               >
                 {subject.name.toUpperCase()}
@@ -154,12 +98,13 @@ const SubjectsSwitcher = () => {
                   onClick={() => setExpandedCourse(null)}
                   className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300"
                 >
+                  {/* <X className="w-5 h-5" /> */}
                 </button>
                 <div className="animate-fadeIn">
                   <img 
                     src={urlFor(expandedCourse.image)} 
                     alt="" 
-                    className="w-full rounded-tr-2xl h-[180px] sm:h-[240px] object-cover shadow-lg mb-4"
+                    className="w-full rounded-tr-[35px] h-[180px] sm:h-[240px] object-cover shadow-lg mb-4"
                   />
                   <h3 className="text-lg sm:text-xl font-medium text-orange">
                     {expandedCourse.name}
@@ -183,11 +128,11 @@ const SubjectsSwitcher = () => {
               >
                 <div className="cursor-pointer">
                   {course.image && (
-                    <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-2xl`}>
+                    <div className={`relative aspect-[4/3] overflow-hidden rounded-tr-[35px]`}>
                       <img
                         src={urlFor(course.image)
                           .width(340)
-                          .height(280)
+                          .height(240)
                           .quality(90)
                           .url()}
                         alt={course.name}

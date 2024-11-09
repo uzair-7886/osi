@@ -22,6 +22,7 @@ import facilities from "./facilities"
 import facility from "./facility"
 import whyosi from "./whyosi"
 import { faqSection } from "./faqpage"
+import gallery from "./gallery"
 
 export const schema = {
   types: [
@@ -39,6 +40,7 @@ export const schema = {
     activity,
     facility,
     whyosi,
+    gallery,
     faqSection,
     descriptions,
     images,
