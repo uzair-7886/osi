@@ -1,31 +1,12 @@
 "use client";
 import React from "react";
-import { useState, useEffect } from "react";
-import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 
-const heroSectionQuery = `*[_type == "heroSection"][0] {
- text,
- date,
- buttonText,
- image
- }`;
-const Hero = () => {
-  const [heroData, setHeroData] = useState(null);
-  useEffect(() => {
-    const fetchHeroData = async () => {
-      try {
-        const data = await client.fetch(heroSectionQuery);
-        setHeroData(data);
-      } catch (error) {
-        console.error("Error fetching hero data:", error);
-      }
-    };
-    fetchHeroData();
-  }, []);
-  const backgroundImageUrl = heroData?.image
-    ? urlFor(heroData.image).url()
+const Hero = ({ initialData }) => {
+  const backgroundImageUrl = initialData?.image
+    ? urlFor(initialData.image).url()
     : "";
+
   return (
     <div className="relative h-screen w-full">
       <div
@@ -46,20 +27,19 @@ const Hero = () => {
       <div className="relative h-full flex items-center">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            {heroData && (
+            {initialData && (
               <>
                 <p className="text-orange font-bold text-[26px] sm:text-xl mb-2">
-                  {heroData.text.split(/\s+/).slice(0, 2).join(" ")}
+                  {initialData.text.split(/\s+/).slice(0, 2).join(" ")}
                 </p>
                 <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4">
-                  {/* {heroData.text} */}
-                  {heroData.text.split(/\s+/).slice(2).join(" ")}
+                  {initialData.text.split(/\s+/).slice(2).join(" ")}
                 </h1>
                 <p className="text-white text-xl sm:text-2xl mb-8">
-                  {heroData.date}
+                  {initialData.date}
                 </p>
                 <button className="bg-darkblue text-white px-8 py-3 rounded-full text-lg font-semibold">
-                  {heroData.buttonText}
+                  {initialData.buttonText}
                 </button>
               </>
             )}
@@ -69,4 +49,5 @@ const Hero = () => {
     </div>
   );
 };
+
 export default Hero;
