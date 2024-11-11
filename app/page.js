@@ -10,32 +10,16 @@ import SummerBanner from "./components/shared/SummerBanner";
 import TestimonialsSlider from "./components/home/TestimonialsSlider";
 import { LearningGrid } from "./components/home/LearningGrid";
 import LivingGrid from "./components/home/LivingGrid";
+import { fetchHeroData } from "./components/home/fetchHeroData";
 
-// const heroSectionQuery = `
-//   *[_type == "heroSection"][0] {
-//     text,
-//     date,
-//     buttonText,
-//     image
-//   }
-// `;
-
-// async function getHeroData() {
-//   try {
-//     return await client.fetch(heroSectionQuery);
-//   } catch (error) {
-//     console.error('Error fetching hero data:', error);
-//     return null;
-//   }
-// }
 
 // export const revalidate = 60;
 
 export default async function Home() {
-  // const heroData = await getHeroData();
+  const heroData = await fetchHeroData();
   return (
     <div>
-      <Hero/>
+      <Hero initialData={heroData}/>
       <ProgramsSection/>
       <LearningGrid/>
       <RegisterHeroSection/>
