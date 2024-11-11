@@ -183,39 +183,41 @@ export default function AnalyticsPage() {
                             </div>
                         </div>
                     ) : analyticsData.length > 0 ? (
-                        <table className="w-full border-collapse border border-gray-300">
-                            <thead className="bg-blue-100 text-blue-900">
-                                <tr>
-                                    <th className="p-3 border border-gray-300 text-left">Timestamp</th>
-                                    <th className="p-3 border border-gray-300 text-left">Event</th>
-                                    <th className="p-3 border border-gray-300 text-left">User ID</th>
-                                    <th className="p-3 border border-gray-300 text-left">Metadata</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {deduplicatedAnalyticsData.flatMap((batch) =>
-                                    batch.events.map((event, index) => (
-                                        <tr
-                                            key={`${batch.date}-${index}`}
-                                            className={
-                                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                                            }
-                                        >
-                                            <td className="p-3 border border-gray-300">
-                                                {new Date(event.timestamp).toLocaleString()}
-                                            </td>
-                                            <td className="p-3 border border-gray-300">{event.event}</td>
-                                            <td className="p-3 border border-gray-300">{event.userId}</td>
-                                            <td className="p-3 border border-gray-300">
-                                                <pre className="text-sm text-gray-700">
-                                                    {JSON.stringify(event.metadata, null, 2)}
-                                                </pre>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse border border-gray-300">
+                                <thead className="bg-blue-100 text-blue-900">
+                                    <tr>
+                                        <th className="p-3 border border-gray-300 text-left">Timestamp</th>
+                                        <th className="p-3 border border-gray-300 text-left">Event</th>
+                                        <th className="p-3 border border-gray-300 text-left">User ID</th>
+                                        <th className="p-3 border border-gray-300 text-left">Metadata</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {deduplicatedAnalyticsData.flatMap((batch) =>
+                                        batch.events.map((event, index) => (
+                                            <tr
+                                                key={`${batch.date}-${index}`}
+                                                className={
+                                                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                                }
+                                            >
+                                                <td className="p-3 border border-gray-300">
+                                                    {new Date(event.timestamp).toLocaleString()}
+                                                </td>
+                                                <td className="p-3 border border-gray-300">{event.event}</td>
+                                                <td className="p-3 border border-gray-300">{event.userId}</td>
+                                                <td className="p-3 border border-gray-300">
+                                                    <pre className="text-sm text-gray-700">
+                                                        {JSON.stringify(event.metadata, null, 2)}
+                                                    </pre>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     ) : (
                         <p className="text-gray-500">No data available for the table.</p>
                     )}
