@@ -28,10 +28,13 @@ export default function AnalyticsPage() {
                         events
                     }
                 `);
-                setAnalyticsData(data);
+
+                // Deduplicate events and update state
+                const deduplicatedData = deduplicateEvents(data);
+                setAnalyticsData(deduplicatedData);
 
                 // Calculate summary data
-                const summary = calculateSummary(data);
+                const summary = calculateSummary(deduplicatedData);
                 setSummaryData(summary);
             } catch (error) {
                 console.error("Error fetching analytics data:", error);
@@ -62,8 +65,8 @@ export default function AnalyticsPage() {
                 // Count event types
                 eventCounts[event.event] = (eventCounts[event.event] || 0) + 1;
 
-                // Collect unique users
-                if (event.userId) {
+                // Collect unique users, excluding invalid user IDs
+                if (event.userId && event.userId !== " - " && event.userId !== "new user") {
                     uniqueUsers.add(event.userId);
                 }
             });
@@ -183,33 +186,35 @@ export default function AnalyticsPage() {
                         <table className="w-full border-collapse border border-gray-300">
                             <thead className="bg-blue-100 text-blue-900">
                                 <tr>
-                                    <th className="p-3 border border-gray-300 text-left">Date</th>
+                                    <th className="p-3 border border-gray-300 text-left">Timestamp</th>
                                     <th className="p-3 border border-gray-300 text-left">Event</th>
                                     <th className="p-3 border border-gray-300 text-left">User ID</th>
                                     <th className="p-3 border border-gray-300 text-left">Metadata</th>
                                 </tr>
                             </thead>
-                                <tbody>
-                                    {deduplicatedAnalyticsData.flatMap((batch) =>
-                                        batch.events.map((event, index) => (
-                                            <tr
-                                                key={`${batch.date}-${index}`}
-                                                className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                                            >
-                                                <td className="p-3 border border-gray-300">
-                                                    {new Date(event.timestamp).toLocaleString()} {/* Full timestamp */}
-                                                </td>
-                                                <td className="p-3 border border-gray-300">{event.event}</td>
-                                                <td className="p-3 border border-gray-300">{event.userId}</td>
-                                                <td className="p-3 border border-gray-300">
-                                                    <pre className="text-sm text-gray-700">
-                                                        {JSON.stringify(event.metadata, null, 2)}
-                                                    </pre>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
+                            <tbody>
+                                {deduplicatedAnalyticsData.flatMap((batch) =>
+                                    batch.events.map((event, index) => (
+                                        <tr
+                                            key={`${batch.date}-${index}`}
+                                            className={
+                                                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                                            }
+                                        >
+                                            <td className="p-3 border border-gray-300">
+                                                {new Date(event.timestamp).toLocaleString()}
+                                            </td>
+                                            <td className="p-3 border border-gray-300">{event.event}</td>
+                                            <td className="p-3 border border-gray-300">{event.userId}</td>
+                                            <td className="p-3 border border-gray-300">
+                                                <pre className="text-sm text-gray-700">
+                                                    {JSON.stringify(event.metadata, null, 2)}
+                                                </pre>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
                         </table>
                     ) : (
                         <p className="text-gray-500">No data available for the table.</p>
