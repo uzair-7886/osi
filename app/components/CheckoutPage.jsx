@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import convertToSubcurrency from "../lib/convertToSubcurrency";
+import { logEvent } from "../lib/analytics"; // Import the batching analytics utility
 import { client } from "@/sanity/lib/client";
 
 const CheckoutPage = ({ amount }) => {
@@ -10,102 +11,126 @@ const CheckoutPage = ({ amount }) => {
     const elements = useElements();
 
     // State variables
-    const [errorMessage, setErrorMessage] = useState();
+    const [errorMessage, setErrorMessage] = useState("");
     const [clientSecret, setClientSecret] = useState("");
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState("");
 
-    // Trigger 'open_checkout_page' event when the component loads
+    // Log 'open_checkout_page' event when the component loads
     useEffect(() => {
-        if (typeof window !== "undefined" && window.gtag) {
-            console.log("Triggering 'open_checkout_page' event");
-            window.gtag("event", "open_checkout_page");
+        if (userId) {
+            logEvent("open_checkout_page", { page: "/checkout", amount }, userId);
         }
-    }, []);
+    }, [amount, userId]);
 
+    // Retrieve userId from local storage
     useEffect(() => {
-        // Retrieve userId from local storage
-        const storedUserId = localStorage.getItem('userId');
+        const storedUserId = localStorage.getItem("userId");
         if (storedUserId) {
             setUserId(storedUserId);
+        }
+        else{
+            setUserId('new user');
         }
     }, []);
 
     // Fetch the client secret from your server
     useEffect(() => {
-        fetch("/api/create-payment-intent", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
-        })
-            .then((res) => res.json())
-            .then((data) => setClientSecret(data.clientSecret));
+        const fetchClientSecret = async () => {
+            try {
+                const response = await fetch("/api/create-payment-intent", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ amount: convertToSubcurrency(amount) }),
+                });
+                const data = await response.json();
+                setClientSecret(data.clientSecret);
+            } catch (error) {
+                console.error("Error fetching client secret:", error);
+            }
+        };
+
+        fetchClientSecret();
     }, [amount]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!stripe || !elements) {
+            setErrorMessage("Stripe is not loaded yet. Please try again later.");
             return;
         }
 
-        // Call elements.submit() immediately before stripe.confirmPayment()
-        const { error: submitError } = await elements.submit();
+        setLoading(true);
 
-        if (submitError) {
-            setErrorMessage(submitError.message);
-            setLoading(false);
-            return;
-        }
+        try {
+            // Call elements.submit() immediately before stripe.confirmPayment()
+            const { error: submitError } = await elements.submit();
 
-        // Now call stripe.confirmPayment()
-        const { error, paymentIntent } = await stripe.confirmPayment({
-            elements,
-            clientSecret,
-            confirmParams: {
-                return_url: `http://localhost:3000/payment-success?amount=${amount}`,
-            },
-            redirect: "if_required",
-        });
-
-        if (error) {
-            // Show error to your customer
-            setErrorMessage(error.message);
-            setLoading(false);
-            return;
-        }
-
-        if (paymentIntent && paymentIntent.status === "succeeded") {
-            // Payment successful
-            // Trigger 'payment_complete' event
-            if (typeof window !== "undefined" && window.gtag) {
-                console.log("Triggering 'payment_complete' event");
-                window.gtag("event", "payment_complete", {
-                    value: amount,
-                    currency: "USD",
-                });
-            } else {
-                console.error("Google Analytics is not loaded yet.");
+            if (submitError) {
+                setErrorMessage(submitError.message);
+                logEvent("payment_failed", { reason: submitError.message }, userId);
+                setLoading(false);
+                return;
             }
 
-            // Store successful payment in Sanity
-            await client.create({
-                _type: 'payment',
-                userId: userId,
-                amount: amount,
-                timestamp: new Date().toISOString(),
+            // Now call stripe.confirmPayment()
+            const { error, paymentIntent } = await stripe.confirmPayment({
+                elements,
+                clientSecret,
+                confirmParams: {
+                    return_url: `http://localhost:3000/payment-success?amount=${amount}`,
+                },
+                redirect: "if_required",
             });
 
-            // Redirect to success page
-            window.location.href = `/payment-success?amount=${amount}`;
-        } else if (paymentIntent && paymentIntent.status === "requires_action") {
-            // Additional authentication is required
-            // Stripe will handle the redirect to the return_url
-        } else {
-            // Handle other statuses
-            setErrorMessage("Payment failed. Please try again.");
+            if (error) {
+                setErrorMessage(error.message);
+                logEvent("payment_failed", { reason: error.message }, userId);
+                setLoading(false);
+                return;
+            }
+
+            if (paymentIntent && paymentIntent.status === "succeeded") {
+                // Payment successful
+                logEvent("payment_success", {
+                    paymentIntentId: paymentIntent.id,
+                    amount,
+                    currency: paymentIntent.currency,
+                }, userId);
+
+                // Store successful payment in Sanity
+                await client.create({
+                    _type: "payment",
+                    userId: userId,
+                    amount: amount,
+                    timestamp: new Date().toISOString(),
+                });
+
+                // Remove the user ID from localStorage after a successful payment
+                localStorage.removeItem("userId");
+
+                // Redirect to success page
+                window.location.href = `/payment-success?amount=${amount}`;
+            } else if (paymentIntent && paymentIntent.status === "requires_action") {
+                // Additional authentication is required
+                logEvent("payment_requires_action", {
+                    paymentIntentId: paymentIntent.id,
+                    amount,
+                }, userId);
+            } else {
+                // Handle other statuses
+                setErrorMessage("Payment failed. Please try again.");
+                logEvent("payment_failed", { status: paymentIntent?.status || "unknown" }, userId);
+                setLoading(false);
+            }
+        } catch (error) {
+            setErrorMessage("An unexpected error occurred. Please try again.");
+            logEvent("payment_failed", { error: error.message }, userId);
+            console.error("Error during payment processing:", error);
+        } finally {
             setLoading(false);
         }
     };

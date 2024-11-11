@@ -23,6 +23,7 @@ import facility from "./facility"
 import whyosi from "./whyosi"
 import { faqSection } from "./faqpage"
 import gallery from "./gallery"
+import analyticsBatch from "./analyticsBatch"
 
 export const schema = {
   types: [
@@ -47,5 +48,6 @@ export const schema = {
     methodologies,
     enrolledUser,
     payment,
+    analyticsBatch,
   ],
 }
