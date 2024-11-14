@@ -1,13 +1,14 @@
 'use client'
 import React, { useState } from 'react';
 import { urlFor } from '@/sanity/lib/image';
-import { ChevronRight, ChevronLeft, X } from 'lucide-react';
+import { ChevronRight, ChevronLeft, X, Search } from 'lucide-react';
 
 const SubjectsSwitcher = ({ initialData }) => {
   const [activeSubject, setActiveSubject] = useState(initialData[0]);
   const [expandedCourse, setExpandedCourse] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isExpanding, setIsExpanding] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleCourseClick = (course) => {
     setIsExpanding(true);
@@ -34,6 +35,11 @@ const SubjectsSwitcher = ({ initialData }) => {
     }
   };
 
+  const filteredCourses = activeSubject.courses?.filter(course =>
+    course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="w-full">
       <div className="bg-gray-100 border-b relative">
@@ -57,6 +63,7 @@ const SubjectsSwitcher = ({ initialData }) => {
                 onClick={() => {
                   setActiveSubject(subject);
                   setExpandedCourse(null);
+                  setSearchQuery('');
                 }}
                 className={`px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-medium hover:text-orange whitespace-nowrap transition-colors flex-shrink-0
                   ${
@@ -74,16 +81,39 @@ const SubjectsSwitcher = ({ initialData }) => {
 
       <div className="container mx-auto px-4 py-6 sm:py-12">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl sm:text-4xl font-semibold text-gray-900 mb-4 sm:mb-6 transition-all duration-300">
-            {activeSubject.name}
-          </h2>
-          <p className="text-sm sm:text-base text-grey leading-relaxed mb-6 sm:mb-8 transition-all duration-300">
-            {activeSubject.description}
-          </p>
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="mb-8">
+            <h2 className="text-2xl sm:text-4xl font-semibold text-gray-900 mb-4 sm:mb-6 transition-all duration-300">
+              {activeSubject.name}
+            </h2>
+            <p className="text-sm sm:text-base text-grey leading-relaxed mb-6 transition-all duration-300">
+              {activeSubject.description}
+            </p>
+          </div>
+
+          <div className="flex md:flex-row flex-col-reverse justify-between items-center mb-8 gap-y-2">
             <button className="text-orange font-medium text-sm sm:text-base hover:scale-105 transition-transform duration-300">
               SEE COURSE OFFERINGS
             </button>
+            <div className="relative flex items-center w-[300px]">
+              <div className="relative w-full flex items-center">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-11 pl-4 pr-12 rounded-l-lg bg-[#12243E] bg-opacity-10 border-none focus:outline-none text-sm"
+                />
+                <button className="absolute right-0 top-0 h-11 w-11 flex items-center justify-center bg-[#1e3a8a] rounded-r-lg">
+                  <img
+                    src="/svgs/search.svg"
+                    alt="Search"
+                    width={20}
+                    height={20}
+                    className="text-white"
+                  />
+                </button>
+              </div>
+            </div>
           </div>
           
           <div 
@@ -98,7 +128,6 @@ const SubjectsSwitcher = ({ initialData }) => {
                   onClick={() => setExpandedCourse(null)}
                   className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full transition-colors duration-300"
                 >
-                  {/* <X className="w-5 h-5" /> */}
                 </button>
                 <div className="animate-fadeIn">
                   <img 
@@ -118,7 +147,7 @@ const SubjectsSwitcher = ({ initialData }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {activeSubject.courses?.map((course) => (
+            {filteredCourses?.map((course) => (
               <div
                 key={course.name}
                 onClick={() => handleCourseClick(course)}
@@ -151,6 +180,12 @@ const SubjectsSwitcher = ({ initialData }) => {
               </div>
             ))}
           </div>
+
+          {filteredCourses?.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No courses found matching your search.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
