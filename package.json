@@ -26,6 +26,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-fast-marquee": "^1.6.5",
+    "react-hook-form": "^7.53.2",
     "recharts": "^2.13.3",
     "sanity": "^3.61.0",
     "stripe": "^17.2.1",
