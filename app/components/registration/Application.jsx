@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { client } from "@/sanity/lib/client";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const RegistrationFlow = () => {
   const [step, setStep] = useState(1);
   const [applicationId, setApplicationId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [clientSecret, setClientSecret] = useState(null);
 
   const methods = useForm({
     defaultValues: {
@@ -37,7 +42,7 @@ const RegistrationFlow = () => {
         hearAbout: "",
       },
       payment: {
-        amount: 0,
+        amount: 500,
         paymentStatus: "pending",
       },
       termsAgreed: false,
@@ -45,6 +50,31 @@ const RegistrationFlow = () => {
   });
 
   const { handleSubmit, register, getValues, setValue } = methods;
+
+  useEffect(() => {
+    if (step === 4) {
+      fetchClientSecret(getValues("payment.amount"));
+    }
+  }, [step]);
+
+  const fetchClientSecret = async (amount) => {
+    try {
+      const response = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount }),
+      });
+      const data = await response.json();
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      } else {
+        console.error("No clientSecret returned from server:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching client secret:", error);
+    }
+  };
+
 
   const saveRegistration = async (data) => {
     setIsSubmitting(true);
@@ -493,141 +523,144 @@ const RegistrationFlow = () => {
   </form>
   );
 
-  const ConfirmationStep = () => (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
-        OCL LOGO
-      </h1>
-      <h2 className="text-xl text-orange font-semibold mb-8 text-center">
-        CONFIRM APPLICATION
-      </h2>
-      <div className="max-w-4xl text-[#555555]">
-        <table className="w-full border-collapse border border-[#555555] mb-8">
-          <thead>
-            <tr>
-              <th className="border border-[#555555] p-1 text-left font-normal">
-                Program
-              </th>
-              <th className="border border-[#555555] p-1 text-right w-[200px] font-normal">
-                Subtotal
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border border-[#555555] p-1">
-                <div className="mb-4">
-                  Oxford Centre for Leadership Summer Program - July 8th -
-                  August 1st, 2025
-                </div>
-                <div className="space-y-1">
-                  <div>Age Group: (Auto Filled)</div>
-                  <div>Subject 1: (Auto Filled)</div>
-                  <div>Subject 2: (Auto Filled)</div>
-                </div>
-              </td>
-              <td className="border border-[#555555] p-1 text-right">
-                £ (Auto Filled)
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-[#555555] p-1 ">Total</td>
-              <td className="border border-[#555555] p-1 text-right ">
-                £ (Auto Filled)
-              </td>
-            </tr>
-          </tbody>
-        </table>
+  const ConfirmationStep = () => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-        <div className="space-y-6">
-          <h3 className="font-semibold">Credit/Debit Card Secure Payment</h3>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block mb-2">Cardholder *</label>
-              <input
-                {...register("cardHolder", { required: true })}
-                type="text"
-                placeholder="Enter cardholder name"
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block mb-2">Card Number *</label>
-              <input
-                {...register("cardNumber", { required: true })}
-                type="text"
-                placeholder="Enter card number"
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-              />
+    console.log(applicationId, 'applicationId');
+
+    const handlePayment = async (e) => {
+      e.preventDefault();
+      if (!stripe || !elements) {
+        setErrorMessage("Stripe is not ready. Please try again later.");
+        return;
+      }
+      setLoading(true);
+      try {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: { return_url: window.location.href },
+        });
+        if (error) {
+          setErrorMessage(error.message);
+        } else {
+          await handlePaymentUpdate(applicationId, "completed");
+          console.log("Payment Successful");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <form onSubmit={handlePayment} className="p-8">
+        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
+          OCL LOGO
+        </h1>
+        <h2 className="text-xl text-orange font-semibold mb-8 text-center">
+          CONFIRM APPLICATION
+        </h2>
+        <div className="max-w-4xl text-[#555555]">
+          <table className="w-full border-collapse border border-[#555555] mb-8">
+            <thead>
+              <tr>
+                <th className="border border-[#555555] p-1 text-left font-normal">
+                  Program
+                </th>
+                <th className="border border-[#555555] p-1 text-right w-[200px] font-normal">
+                  Subtotal
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-[#555555] p-1">
+                  <div className="mb-4">
+                    Oxford Centre for Leadership Summer Program - July 8th -
+                    August 1st, 2025
+                  </div>
+                  <div className="space-y-1">
+                    <div>Age Group: (Auto Filled)</div>
+                    <div>Subject 1: (Auto Filled)</div>
+                    <div>Subject 2: (Auto Filled)</div>
+                  </div>
+                </td>
+                <td className="border border-[#555555] p-1 text-right">
+                  £ (Auto Filled)
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-[#555555] p-1 ">Total</td>
+                <td className="border border-[#555555] p-1 text-right ">
+                  £ (Auto Filled)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div className="space-y-6">
+            <h3 className="font-semibold">Credit/Debit Card Secure Payment</h3>
+            <div className="grid grid-cols-1 gap-6">
+              {clientSecret && <PaymentElement />}
+              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6">
-            <div>
-              <label className="block mb-2">Expiration Date *</label>
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  {...register("expirationMonth", { required: true })}
-                  type="text"
-                  placeholder="Month"
-                  className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-                />
-                <input
-                  {...register("expirationYear", { required: true })}
-                  type="text"
-                  placeholder="Year"
-                  className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-                />
-              </div>
+
+          <div className="mt-8">
+            <p className="text-sm mb-4">
+              Your personal data will be used to process your order, support your
+              experience throughout this website, and for other purposes described
+              in our privacy policy.
+            </p>
+            <div className="flex items-center mb-6">
+              <input
+                {...register("agreed", { required: true })}
+                type="checkbox"
+                className="mr-4"
+              />
+              <span>
+                I have read and agree to the website terms and conditions
+              </span>
+            </div>
+            <div className="flex justify-center">
+              <button
+                disabled={!stripe || loading}
+                className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+              >
+                {loading ? "Processing..." : "Confirm & Pay"}
+              </button>
             </div>
             <div>
-              <label className="block mb-2">Card Verification Number *</label>
-              <input
-                {...register("cvv", { required: true })}
-                type="text"
-                placeholder="Enter CVV"
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-              />
+              <ProgressBars currentStep={step} />
             </div>
           </div>
         </div>
-
-        <div className="mt-8">
-          <p className="text-sm mb-4">
-            Your personal data will be used to process your order, support your
-            experience throughout this website, and for other purposes described
-            in our privacy policy.
-          </p>
-          <div className="flex items-center mb-6">
-            <input
-              {...register("agreed", { required: true })}
-              type="checkbox"
-              className="mr-4"
-            />
-            <span>
-              I have read and agree to the website terms and conditions
-            </span>
-          </div>
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#003180] text-white px-6 py-2 rounded-full"
-            >
-              Confirm Application
-            </button>
-          </div>
-          <div>
-            <ProgressBars currentStep={step} />
-          </div>
-        </div>
-      </div>
-    </form>
-  );
+      </form>
+    );
+  };
 
   const steps = [
     <RegistrationStep />,
     <ApplicationStep />,
     <FurtherInfoStep />,
-    <ConfirmationStep />,
+    clientSecret ? (
+      <Elements stripe={stripePromise} options={{ clientSecret }}>
+        <ConfirmationStep />
+      </Elements>
+    ) : (
+      <div className="flex items-center justify-center">
+        <div
+          className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent text-blue-500"
+          role="status"
+        >
+          <span className="sr-only">Loading...</span>
+        </div>
+      </div>
+    ),
   ];
 
   return (
