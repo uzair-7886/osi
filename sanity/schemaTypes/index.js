@@ -24,9 +24,11 @@ import whyosi from "./whyosi"
 import { faqSection } from "./faqpage"
 import gallery from "./gallery"
 import analyticsBatch from "./analyticsBatch"
+import registration from "./registration"
 
 export const schema = {
   types: [
+    registration,
     HeroSection,
     testimonials,
     faq,
