@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { client } from "@/sanity/lib/client";
-import { logEvent } from "../../lib/analytics"; // Import the batching analytics utility
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const RegistrationFlow = () => {
   const [step, setStep] = useState(1);
   const [applicationId, setApplicationId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [clientSecret, setClientSecret] = useState(null);
 
   const methods = useForm({
     defaultValues: {
@@ -43,7 +37,7 @@ const RegistrationFlow = () => {
         hearAbout: "",
       },
       payment: {
-        amount: 500,
+        amount: 0,
         paymentStatus: "pending",
       },
       termsAgreed: false,
@@ -51,36 +45,6 @@ const RegistrationFlow = () => {
   });
 
   const { handleSubmit, register, getValues, setValue } = methods;
-
-  useEffect(() => {
-    if (step === 1) {
-      logEvent("registration_form_opened", { page: "/application" });
-    }
-    if (step === 4) {
-      const amount = getValues("payment.amount");
-      logEvent("open_payment_confirmation", { page: "/application", amount }, applicationId);
-      fetchClientSecret(amount);
-    }
-  }, [step]);
-
-  const fetchClientSecret = async (amount) => {
-    try {
-      const response = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount }),
-      });
-      const data = await response.json();
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-      } else {
-        console.error("No clientSecret returned from server:", data);
-      }
-    } catch (error) {
-      console.error("Error fetching client secret:", error);
-    }
-  };
-
 
   const saveRegistration = async (data) => {
     setIsSubmitting(true);
@@ -153,7 +117,8 @@ const RegistrationFlow = () => {
         setStep(step + 1);
       } else if (step === 3) {
         if (data.step3.visaRequirement) {
-          data.step3.visaRequirement = data.step3.visaRequirement === 'yes' ? true : false;
+          data.step3.visaRequirement =
+            data.step3.visaRequirement === "yes" ? true : false;
         }
         const registrationId = await saveRegistration(data);
         setStep(4);
@@ -204,9 +169,40 @@ const RegistrationFlow = () => {
     );
   };
 
-  const StepIndicator = () => (
-    <div className="w-2/5 bg-[#003180] p-8 flex flex-col">
-      <div className="text-white text-2xl font-bold mb-12">OCL LOGO</div>
+  const StepIndicator = () => {
+    // Mobile Step Indicator (Horizontal)
+    const MobileSteps = () => (
+      <div className="relative flex justify-center items-center px-8 mb-4">
+        {/* Container for steps and lines */}
+        <div className="relative flex items-center justify-between w-full max-w-xs">
+          {/* Background line */}
+          <div className="absolute top-5 left-10 right-10 h-0.5 bg-grey"></div>
+          {/* Progress line */}
+          <div 
+            className="absolute top-5 left-10 h-0.5 bg-orange transition-all duration-300"
+            style={{
+              width: `${Math.max(0, Math.min(step - 1, 2)) * 40}%`,
+            }}
+          ></div>
+          
+          {/* Step indicators */}
+          {[1, 2, 3].map((num) => (
+            <div key={num} className="relative z-10">
+              <div
+                className={`w-10 h-10 rounded-full border-2 ${
+                  step >= (num === 3 ? 4 : num) ? "border-orange" : "border-grey"
+                } flex items-center justify-center text-white bg-[#003180]`}
+              >
+                {num}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+
+    // Desktop Step Indicator (Vertical)
+    const DesktopSteps = () => (
       <div className="flex flex-col space-y-8 font-semibold relative">
         <div className="absolute left-5 top-10 w-0.5 h-[calc(100%-40px)] bg-grey"></div>
         <div
@@ -217,7 +213,9 @@ const RegistrationFlow = () => {
         ></div>
         <div className="flex items-center">
           <div
-            className={`w-10 h-10 rounded-full border-2 ${step >= 1 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+            className={`w-10 h-10 rounded-full border-2 ${
+              step >= 1 ? "border-orange" : "border-grey"
+            } flex items-center justify-center text-white bg-[#003180] relative z-10`}
           >
             1
           </div>
@@ -225,7 +223,9 @@ const RegistrationFlow = () => {
         </div>
         <div className="flex items-center">
           <div
-            className={`w-10 h-10 rounded-full border-2 ${step >= 2 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+            className={`w-10 h-10 rounded-full border-2 ${
+              step >= 2 ? "border-orange" : "border-grey"
+            } flex items-center justify-center text-white bg-[#003180] relative z-10`}
           >
             2
           </div>
@@ -233,115 +233,132 @@ const RegistrationFlow = () => {
         </div>
         <div className="flex items-center">
           <div
-            className={`w-10 h-10 rounded-full border-2 ${step >= 4 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+            className={`w-10 h-10 rounded-full border-2 ${
+              step >= 4 ? "border-orange" : "border-grey"
+            } flex items-center justify-center text-white bg-[#003180] relative z-10`}
           >
             3
           </div>
           <span className="ml-4 text-white">Confirm Application</span>
         </div>
       </div>
-    </div>
-  );
-
-  const RegistrationStep = () => {
-    const [formStarted, setFormStarted] = useState(false);
-
-    const handleFocus = () => {
-      if (!formStarted) {
-        logEvent("filling_form");
-        setFormStarted(true);
-      }
-    };
+    );
 
     return (
-      <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-        <h2 className="text-xl text-orange font-semibold mb-8 text-center">REGISTRATION FORM</h2>
-        <div className="space-y-6 max-w-sm w-full text-[#555555]">
-          <div>
-            <label className="block mb-2">Age Group :</label>
-            <div className="relative">
-              <select
-                {...register('step1.ageGroup')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-                onFocus={handleFocus}
-              >
-                <option value="">Select your age...</option>
-                <option value="13-15">13-15</option>
-                <option value="16-17">16-17</option>
-                <option value="18+">18+</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block mb-2">Subject 1 :</label>
-            <div className="relative">
-              <select
-                {...register('step1.subject1')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-              >
-                <option value="">Select subject ...</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block mb-2">Subject 2 :</label>
-            <div className="relative">
-              <select
-                {...register('step1.subject2')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-              >
-                <option value="">Select subject ...</option>
-                <option value="biology">Biology</option>
-                <option value="computerScience">Computer Science</option>
-                <option value="economics">Economics</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#003180] text-white px-6 py-3 rounded-full disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : 'Apply Now'}
-            </button>
-          </div>
-          <ProgressBars currentStep={step} />
+      <div className="w-full md:w-2/5 bg-[#003180] p-4 md:p-8">
+        <div className="text-white text-xl md:text-2xl font-bold mb-6 md:mb-12">
+          OCL LOGO
         </div>
-      </form>
+        <div className="block md:hidden">
+          <MobileSteps />
+        </div>
+        <div className="hidden md:block">
+          <DesktopSteps />
+        </div>
+      </div>
     );
   };
 
-  
-  const ApplicationStep = () => (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-      <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
-      <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
+  const RegistrationStep = () => (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="p-8 flex flex-col items-center"
+    >
+      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
+        OCL LOGO
+      </h1>
+      <h2 className="text-xl text-orange font-semibold mb-8 text-center">
+        REGISTRATION FORM
+      </h2>
+      <div className="space-y-6 max-w-sm w-full text-[#555555]">
         <div>
-          <label className="block mb-2">First Name:</label>
+          <label className="block mb-2">Age Group :</label>
+          <div className="relative">
+            <select
+              {...register("step1.ageGroup")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select your age...</option>
+              <option value="13-15">13-15</option>
+              <option value="16-17">16-17</option>
+              <option value="18+">18+</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">Subject 1 :</label>
+          <div className="relative">
+            <select
+              {...register("step1.subject1")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select subject ...</option>
+              <option value="mathematics">Mathematics</option>
+              <option value="physics">Physics</option>
+              <option value="chemistry">Chemistry</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">Subject 2 :</label>
+          <div className="relative">
+            <select
+              {...register("step1.subject2")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select subject ...</option>
+              <option value="biology">Biology</option>
+              <option value="computerScience">Computer Science</option>
+              <option value="economics">Economics</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-[#003180] text-white px-6 py-3 rounded-full disabled:opacity-50"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Apply Now"}
+          </button>
+        </div>
+        <ProgressBars currentStep={step} />
+      </div>
+    </form>
+  );
+
+  const ApplicationStep = () => (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="p-4 md:p-8 flex flex-col items-center"
+    >
+      <h1 className="text-xl md:text-2xl font-bold text-[#003180] mb-2 text-center">
+        OCL LOGO
+      </h1>
+      <h2 className="text-lg md:text-xl text-orange font-semibold mb-4 text-center">
+        APPLICATION FORM
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-4xl text-[#555555]">
+        <div>
+          <label className="block mb-2 text-sm md:text-base">First Name:</label>
           <input
             {...register("step2.firstName")}
             type="text"
@@ -351,7 +368,7 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Surname:</label>
+          <label className="block mb-2 text-sm md:text-base">Surname:</label>
           <input
             {...register("step2.surname")}
             type="text"
@@ -361,7 +378,7 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Date of Birth:</label>
+          <label className="block mb-2 text-sm md:text-base">Date of Birth:</label>
           <input
             {...register("step2.dateOfBirth")}
             type="date"
@@ -370,7 +387,8 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Gender:</label>
+          <label className="block mb-2 text-sm md:text-base">Gender:</label>
+          <div className="relative">
           <select
             {...register("step2.gender")}
             className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
@@ -381,9 +399,15 @@ const RegistrationFlow = () => {
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
+          <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
         </div>
         <div>
-          <label className="block mb-2">Email Id:</label>
+          <label className="block mb-2 text-sm md:text-base">Email Id:</label>
           <input
             {...register("step2.email")}
             type="email"
@@ -393,7 +417,7 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Mobile No.:</label>
+          <label className="block mb-2 text-sm md:text-base">Mobile No.:</label>
           <input
             {...register("step2.mobile")}
             type="tel"
@@ -403,7 +427,7 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Home Address:</label>
+          <label className="block mb-2 text-sm md:text-base">Home Address:</label>
           <input
             {...register("step2.address")}
             type="text"
@@ -413,7 +437,7 @@ const RegistrationFlow = () => {
           />
         </div>
         <div>
-          <label className="block mb-2">Town/City:</label>
+          <label className="block mb-2 text-sm md:text-base">Town/City:</label>
           <input
             {...register("step2.town")}
             type="text"
@@ -422,196 +446,168 @@ const RegistrationFlow = () => {
             disabled={isSubmitting}
           />
         </div>
-        <div className="col-span-2">
-          <label className="block mb-2">Country (as per Passport):</label>
+        <div className="col-span-1 md:col-span-2">
+          <label className="block mb-2 text-sm md:text-base">
+            Country (as per Passport):
+          </label>
           <input
             {...register("step2.country")}
             type="text"
             placeholder="Enter your country..."
-            className="w-1/2 p-3 bg-[#EEEEEE] rounded-lg"
+            className="w-full md:w-1/2 p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
           />
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center w-full">
         <button
           type="submit"
-          className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
+          className="mt-6 md:mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50 w-full md:w-auto"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting...' : 'Next'}
+          {isSubmitting ? "Submitting..." : "Next"}
         </button>
       </div>
+        <ProgressBars currentStep={step} />
     </form>
   );
 
   const FurtherInfoStep = () => (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-    <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-    <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
-    <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
-      <div>
-        <label className="block mb-2">Your Institution (School/University/Organisation):</label>
-        <div className="relative">
-          <select
-            {...register("step3.institution")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="p-4 md:p-8 flex flex-col items-center"
+    >
+      <h1 className="text-xl md:text-2xl font-bold text-[#003180] mb-2 text-center">
+        OCL LOGO
+      </h1>
+      <h2 className="text-lg md:text-xl text-orange font-semibold mb-4 text-center">
+        APPLICATION FORM
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-4xl text-[#555555]">
+        <div>
+          <label className="block mb-2 text-sm md:text-base">
+            Your Institution (School/University/Organisation):
+          </label>
+          <div className="relative">
+            <select
+              {...register("step3.institution")}
+              className="w-full p-3 pr-10 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select your institution...</option>
+              <option value="school">School</option>
+              <option value="university">University</option>
+              <option value="organisation">Organisation</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+  
+        <div>
+          <label className="block mb-2 text-sm md:text-base">Institution Name:</label>
+          <input
+            {...register("step3.institutionName")}
+            type="text"
+            placeholder="Enter your Institution name..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
-          >
-            <option value="">Select your institution...</option>
-            <option value="school">School</option>
-            <option value="university">University</option>
-            <option value="organisation">Organisation</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+          />
+        </div>
+  
+        <div>
+          <label className="block mb-2 text-sm md:text-base">Institution City:</label>
+          <input
+            {...register("step3.institutionCity")}
+            type="text"
+            placeholder="Enter your Institution city..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+  
+        <div>
+          <label className="block mb-2 text-sm md:text-base">
+            Institution Country (Optional):
+          </label>
+          <input
+            {...register("step3.institutionCountry")}
+            type="text"
+            placeholder="Enter your Institution country..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+  
+        <div>
+          <label className="block mb-2 text-sm md:text-base">
+            Visa Requirement (Yes/No):
+          </label>
+          <div className="relative">
+            <select
+              {...register("step3.visaRequirement")}
+              className="w-full p-3 pr-10 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select requirement...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+  
+        <div>
+          <label className="block mb-2 text-sm md:text-base">
+            How Did You Hear About This Program?
+          </label>
+          <input
+            {...register("step3.hearAbout")}
+            type="text"
+            placeholder="Enter response..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
           />
         </div>
       </div>
-      <div>
-        <label className="block mb-2">Institution Name:</label>
-        <input
-          {...register("step3.institutionName")}
-          type="text"
-          placeholder="Enter your Institution name..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+  
+      <div className="flex justify-center w-full">
+        <button
+          type="submit"
+          className="mt-6 md:mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50 w-full md:w-auto"
           disabled={isSubmitting}
-        />
+        >
+          {isSubmitting ? "Submitting..." : "Apply Now"}
+        </button>
       </div>
-      <div>
-        <label className="block mb-2">Institution City:</label>
-        <input
-          {...register("step3.institutionCity")}
-          type="text"
-          placeholder="Enter your Institution city..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Institution Country (Optional):</label>
-        <input
-          {...register("step3.institutionCountry")}
-          type="text"
-          placeholder="Enter your Institution country..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Visa Requirement (Yes/No):</label>
-        <div className="relative">
-          <select
-            {...register("step3.visaRequirement")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-            disabled={isSubmitting}
-          >
-            <option value="">Select requirement...</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block mb-2">How Did You Hear About This Program?</label>
-        <input
-          {...register("step3.hearAbout")}
-          type="text"
-          placeholder="Enter response..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-    </div>
-    <div className="flex justify-center">
-      <button
-        type="submit"
-        className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Submitting...' : 'Apply Now'}
-      </button>
-    </div>
-  </form>
+      <ProgressBars currentStep={step} />
+    </form>
   );
 
-  const ConfirmationStep = () => {
-    const stripe = useStripe();
-    const elements = useElements();
-    const [errorMessage, setErrorMessage] = useState("");
-    const [loading, setLoading] = useState(false);
-
-    console.log(applicationId, 'applicationId');
-
-    const handlePayment = async (e) => {
-      e.preventDefault();
-      if (!stripe || !elements) {
-        setErrorMessage("Stripe is not ready. Please try again later.");
-        return;
-      }
-      setLoading(true);
-      try {
-        const amount = getValues("payment.amount");
-
-        const { error, paymentIntent } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `https://osi-liard.vercel.app/payment-success?amount=${amount}`
-          },
-          redirect: "if_required",
-        });
-
-        if (error) {
-          setErrorMessage(error.message);
-          logEvent("payment_failed", { reason: error.message }, applicationId);
-          setLoading(false);
-          return;
-        }
-
-        if (paymentIntent && paymentIntent.status === "succeeded") {
-          // handle success
-          await handlePaymentUpdate(applicationId, "completed");
-
-          // log success
-          logEvent("payment_success", {
-            paymentIntentId: paymentIntent.id,
-            amount,
-            currency: paymentIntent.currency,
-          }, applicationId);
-        }
-
-        // Redirect to success page
-        window.location.href = `/payment-success?amount=${amount}`;
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    return (
-      <form onSubmit={handlePayment} className="p-8">
-        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
-          OCL LOGO
-        </h1>
-        <h2 className="text-xl text-orange font-semibold mb-8 text-center">
-          CONFIRM APPLICATION
-        </h2>
-        <div className="max-w-4xl text-[#555555]">
-          <table className="w-full border-collapse border border-[#555555] mb-8">
+  const ConfirmationStep = () => (
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8">
+      <h1 className="text-xl md:text-2xl font-bold text-[#003180] mb-2 text-center">
+        OCL LOGO
+      </h1>
+      <h2 className="text-lg md:text-xl text-orange font-semibold mb-4 md:mb-8 text-center">
+        CONFIRM APPLICATION
+      </h2>
+      <div className="max-w-4xl text-[#555555] mx-auto">
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full border-collapse border border-[#555555]">
             <thead>
               <tr>
-                <th className="border border-[#555555] p-1 text-left font-normal">
+                <th className="border border-[#555555] p-1 text-left font-normal min-w-[200px]">
                   Program
                 </th>
-                <th className="border border-[#555555] p-1 text-right w-[200px] font-normal">
+                <th className="border border-[#555555] p-1 text-right w-[120px] md:w-[200px] font-normal">
                   Subtotal
                 </th>
               </tr>
@@ -620,10 +616,12 @@ const RegistrationFlow = () => {
               <tr>
                 <td className="border border-[#555555] p-1">
                   <div className="mb-4">
-                    Oxford Centre for Leadership Summer Program - July 8th -
-                    August 1st, 2025
+                    <span className="text-sm md:text-base">
+                      Oxford Centre for Leadership Summer Program - July 8th -
+                      August 1st, 2025
+                    </span>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 text-sm md:text-base">
                     <div>Age Group: (Auto Filled)</div>
                     <div>Subject 1: (Auto Filled)</div>
                     <div>Subject 2: (Auto Filled)</div>
@@ -634,80 +632,112 @@ const RegistrationFlow = () => {
                 </td>
               </tr>
               <tr>
-                <td className="border border-[#555555] p-1 ">Total</td>
-                <td className="border border-[#555555] p-1 text-right ">
+                <td className="border border-[#555555] p-1">Total</td>
+                <td className="border border-[#555555] p-1 text-right">
                   £ (Auto Filled)
                 </td>
               </tr>
             </tbody>
           </table>
-
-          <div className="space-y-6">
-            <h3 className="font-semibold">Credit/Debit Card Secure Payment</h3>
-            <div className="grid grid-cols-1 gap-6">
-              {clientSecret && <PaymentElement />}
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            <p className="text-sm mb-4">
-              Your personal data will be used to process your order, support your
-              experience throughout this website, and for other purposes described
-              in our privacy policy.
-            </p>
-            <div className="flex items-center mb-6">
+        </div>
+  
+        <div className="space-y-6">
+          <h3 className="font-semibold">Credit/Debit Card Secure Payment</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div>
+              <label className="block mb-2 text-sm md:text-base">Cardholder *</label>
               <input
-                {...register("agreed", { required: true })}
-                type="checkbox"
-                className="mr-4"
+                {...register("cardHolder", { required: true })}
+                type="text"
+                placeholder="Enter cardholder name"
+                className="w-full p-2 md:p-3 bg-[#EEEEEE] rounded-lg text-sm md:text-base"
               />
-              <span>
-                I have read and agree to the website terms and conditions
-              </span>
-            </div>
-            <div className="flex justify-center">
-              <button
-                disabled={!stripe || loading}
-                className="bg-green-500 text-white px-4 py-2 rounded mt-4"
-              >
-                {loading ? "Processing..." : "Confirm & Pay"}
-              </button>
             </div>
             <div>
-              <ProgressBars currentStep={step} />
+              <label className="block mb-2 text-sm md:text-base">Card Number *</label>
+              <input
+                {...register("cardNumber", { required: true })}
+                type="text"
+                placeholder="Enter card number"
+                className="w-full p-2 md:p-3 bg-[#EEEEEE] rounded-lg text-sm md:text-base"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div>
+              <label className="block mb-2 text-sm md:text-base">Expiration Date *</label>
+              <div className="grid grid-cols-2 gap-2 md:gap-4">
+                <input
+                  {...register("expirationMonth", { required: true })}
+                  type="text"
+                  placeholder="Month"
+                  className="w-full p-2 md:p-3 bg-[#EEEEEE] rounded-lg text-sm md:text-base"
+                />
+                <input
+                  {...register("expirationYear", { required: true })}
+                  type="text"
+                  placeholder="Year"
+                  className="w-full p-2 md:p-3 bg-[#EEEEEE] rounded-lg text-sm md:text-base"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block mb-2 text-sm md:text-base">Card Verification Number *</label>
+              <input
+                {...register("cvv", { required: true })}
+                type="text"
+                placeholder="Enter CVV"
+                className="w-full p-2 md:p-3 bg-[#EEEEEE] rounded-lg text-sm md:text-base"
+              />
             </div>
           </div>
         </div>
-      </form>
-    );
-  };
+  
+        <div className="mt-6 md:mt-8">
+          <p className="text-xs md:text-sm mb-4">
+            Your personal data will be used to process your order, support your
+            experience throughout this website, and for other purposes described
+            in our privacy policy.
+          </p>
+          <div className="flex items-start md:items-center mb-6">
+            <input
+              {...register("agreed", { required: true })}
+              type="checkbox"
+              className="mr-2 md:mr-4 mt-1 md:mt-0"
+            />
+            <span className="text-sm md:text-base">
+              I have read and agree to the website terms and conditions
+            </span>
+          </div>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-[#003180] text-white px-4 md:px-6 py-2 rounded-full text-sm md:text-base w-full md:w-auto"
+            >
+              Confirm Application
+            </button>
+          </div>
+          <div className="mt-4">
+            <ProgressBars currentStep={step} />
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+  
 
   const steps = [
     <RegistrationStep />,
     <ApplicationStep />,
     <FurtherInfoStep />,
-    clientSecret ? (
-      <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <ConfirmationStep />
-      </Elements>
-    ) : (
-      <div className="flex items-center justify-center">
-        <div
-          className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent text-blue-500"
-          role="status"
-        >
-          <span className="sr-only">Loading...</span>
-        </div>
-      </div>
-    ),
+    <ConfirmationStep />,
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-5">
-      <div className="flex rounded-tr-[40px] w-4/5 shadow-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-5xl md:flex rounded-tr-[40px] shadow-2xl">
         <StepIndicator />
-        <div className="w-full">
+        <div className="w-full md:p-8">
           <FormProvider {...methods}>{steps[step - 1]}</FormProvider>
         </div>
       </div>
