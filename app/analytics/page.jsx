@@ -59,6 +59,9 @@ export default function AnalyticsPage() {
                 if (event.event === "form_opened" && lastEvent === "form_opened") {
                     return; // Skip this event
                 }
+                if (event.event === "registration_form_opened" && lastEvent === "registration_form_opened") {
+                    return; // Skip this event
+                }
 
                 lastEvent = event.event;
 
