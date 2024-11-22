@@ -59,6 +59,9 @@ export default function AnalyticsPage() {
                 if (event.event === "form_opened" && lastEvent === "form_opened") {
                     return; // Skip this event
                 }
+                if (event.event === "registration_form_opened" && lastEvent === "registration_form_opened") {
+                    return; // Skip this event
+                }
 
                 lastEvent = event.event;
 
@@ -85,6 +88,9 @@ export default function AnalyticsPage() {
                 if (event.event === "form_opened" && lastEvent === "form_opened") {
                     return; // Skip this event
                 }
+                if (event.event === "registration_form_opened" && lastEvent === "registration_form_opened") {
+                    return; // Skip this event
+                }
 
                 deduplicatedEvents.push(event);
                 lastEvent = event.event;
@@ -97,11 +103,24 @@ export default function AnalyticsPage() {
     // Apply deduplication
     const deduplicatedAnalyticsData = deduplicateEvents(analyticsData);
 
-    // Transform data for Recharts
-    const chartData = deduplicatedAnalyticsData.map((batch) => ({
-        date: new Date(batch.date).toLocaleDateString(),
-        events: batch.events.length,
-    }));
+    // Transform data for Recharts based on individual event timestamps
+    const chartData = [];
+    const eventsByDate = {};
+
+    deduplicatedAnalyticsData.forEach((batch) => {
+        batch.events.forEach((event) => {
+            const eventDate = new Date(event.timestamp).toLocaleDateString();
+
+            if (!eventsByDate[eventDate]) {
+                eventsByDate[eventDate] = 0;
+            }
+            eventsByDate[eventDate] += 1;
+        });
+    });
+
+    for (const [date, count] of Object.entries(eventsByDate)) {
+        chartData.push({ date, events: count });
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
