@@ -8,11 +8,44 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
+const Modal = ({ isOpen, onClose, status }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-opacity-80 bg-black flex items-center justify-center z-50">
+      <div className="bg-darkblue p-6 rounded-lg text-center text-white shadow-lg">
+        <h2 className="text-2xl font-bold mb-4">
+          {status === "success" ? "Payment Successful" : "Payment Failed"}
+        </h2>
+        <p className="mb-6">
+          {status === "success"
+            ? "Thank you for registration! Your payment was successful."
+            : "Unfortunately, your payment could not be processed. Please try again."}
+        </p>
+        <button
+          onClick={() => {
+            if (status === "success") {
+              window.location.href = "/";
+            } else {
+              onClose();
+            }
+          }}
+          className="bg-white text-darkblue px-6 py-2 rounded-full font-semibold hover:bg-gray-200 transition-all"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
 const RegistrationFlow = () => {
   const [step, setStep] = useState(1);
   const [applicationId, setApplicationId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [clientSecret, setClientSecret] = useState(null);
+  const [modalStatus, setModalStatus] = useState({ isOpen: false, status: "" });
 
   const methods = useForm({
     defaultValues: {
@@ -58,7 +91,15 @@ const RegistrationFlow = () => {
     }
     if (step === 4) {
       const amount = getValues("payment.amount");
-      logEvent("open_payment_confirmation", { page: "/application", amount }, applicationId);
+      const step1 = getValues("step1");
+      const step2 = getValues("step2");
+      logEvent("open_payment_confirmation", {
+        full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
+        email: step2.email || "N/A",
+        mobile: step2.mobile || "N/A",
+        ageGroup: step1.ageGroup || "N/A",
+        paymentAmount: amount || 0,
+      }, applicationId);
       fetchClientSecret(amount);
     }
   }, [step]);
@@ -156,6 +197,15 @@ const RegistrationFlow = () => {
           data.step3.visaRequirement = data.step3.visaRequirement === 'yes' ? true : false;
         }
         const registrationId = await saveRegistration(data);
+
+        // log success
+        logEvent("form_submission_completed", {
+          full_name: `${data.step2.firstName} ${data.step2.surname}` || "Anonymous",
+          email: data.step2.email || "N/A",
+          mobile: data.step2.mobile || "N/A",
+          ageGroup: data.step1.ageGroup || "N/A",
+        }, registrationId);
+
         setStep(4);
       } else if (step === 4) {
         // Handle payment confirmation
@@ -334,7 +384,7 @@ const RegistrationFlow = () => {
     );
   };
 
-  
+
   const ApplicationStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
       <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
@@ -447,108 +497,106 @@ const RegistrationFlow = () => {
 
   const FurtherInfoStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-    <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-    <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
-    <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
-      <div>
-        <label className="block mb-2">Your Institution (School/University/Organisation):</label>
-        <div className="relative">
-          <select
-            {...register("step3.institution")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+      <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
+      <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
+        <div>
+          <label className="block mb-2">Your Institution (School/University/Organisation):</label>
+          <div className="relative">
+            <select
+              {...register("step3.institution")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select your institution...</option>
+              <option value="school">School</option>
+              <option value="university">University</option>
+              <option value="organisation">Organisation</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">Institution Name:</label>
+          <input
+            {...register("step3.institutionName")}
+            type="text"
+            placeholder="Enter your Institution name..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
-          >
-            <option value="">Select your institution...</option>
-            <option value="school">School</option>
-            <option value="university">University</option>
-            <option value="organisation">Organisation</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Institution City:</label>
+          <input
+            {...register("step3.institutionCity")}
+            type="text"
+            placeholder="Enter your Institution city..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Institution Country (Optional):</label>
+          <input
+            {...register("step3.institutionCountry")}
+            type="text"
+            placeholder="Enter your Institution country..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Visa Requirement (Yes/No):</label>
+          <div className="relative">
+            <select
+              {...register("step3.visaRequirement")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select requirement...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">How Did You Hear About This Program?</label>
+          <input
+            {...register("step3.hearAbout")}
+            type="text"
+            placeholder="Enter response..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
           />
         </div>
       </div>
-      <div>
-        <label className="block mb-2">Institution Name:</label>
-        <input
-          {...register("step3.institutionName")}
-          type="text"
-          placeholder="Enter your Institution name..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
           disabled={isSubmitting}
-        />
+        >
+          {isSubmitting ? 'Submitting...' : 'Apply Now'}
+        </button>
       </div>
-      <div>
-        <label className="block mb-2">Institution City:</label>
-        <input
-          {...register("step3.institutionCity")}
-          type="text"
-          placeholder="Enter your Institution city..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Institution Country (Optional):</label>
-        <input
-          {...register("step3.institutionCountry")}
-          type="text"
-          placeholder="Enter your Institution country..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Visa Requirement (Yes/No):</label>
-        <div className="relative">
-          <select
-            {...register("step3.visaRequirement")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-            disabled={isSubmitting}
-          >
-            <option value="">Select requirement...</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block mb-2">How Did You Hear About This Program?</label>
-        <input
-          {...register("step3.hearAbout")}
-          type="text"
-          placeholder="Enter response..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-    </div>
-    <div className="flex justify-center">
-      <button
-        type="submit"
-        className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Submitting...' : 'Apply Now'}
-      </button>
-    </div>
-  </form>
+    </form>
   );
 
-  const ConfirmationStep = () => {
+  const ConfirmationStep = ({ applicationId, step1, step2 }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
-
-    console.log(applicationId, 'applicationId');
 
     const handlePayment = async (e) => {
       e.preventDefault();
@@ -559,42 +607,60 @@ const RegistrationFlow = () => {
       setLoading(true);
       try {
         const amount = getValues("payment.amount");
-
         const { error, paymentIntent } = await stripe.confirmPayment({
           elements,
           confirmParams: {
-            return_url: `https://osi-liard.vercel.app/payment-success?amount=${amount}`
+            return_url: `https://osi-liard.vercel.app/payment-success?amount=${amount}`,
           },
           redirect: "if_required",
         });
 
         if (error) {
           setErrorMessage(error.message);
-          logEvent("payment_failed", { reason: error.message }, applicationId);
-          setLoading(false);
+          logEvent(
+            "payment_failed",
+            {
+              reason: error.message || "ERROR",
+              full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
+              email: step2.email || "N/A",
+              mobile: step2.mobile || "N/A",
+              ageGroup: step1.ageGroup || "N/A",
+            },
+            applicationId
+          );
+          setModalStatus({ isOpen: true, status: "failure" });
+          // setLoading(false);
           return;
         }
 
         if (paymentIntent && paymentIntent.status === "succeeded") {
-          // handle success
+
+          logEvent(
+            "payment_success",
+            {
+              paymentAmount: amount || 0,
+              paymentIntentId: paymentIntent.id || "N/A",
+              currency: paymentIntent.currency || "N/A",
+              full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
+              email: step2.email || "N/A",
+              mobile: step2.mobile || "N/A",
+              ageGroup: step1.ageGroup || "N/A",
+            },
+            applicationId
+          );
+
+
           await handlePaymentUpdate(applicationId, "completed");
-
-          // log success
-          logEvent("payment_success", {
-            paymentIntentId: paymentIntent.id,
-            amount,
-            currency: paymentIntent.currency,
-          }, applicationId);
+          setModalStatus({ isOpen: true, status: "success" });
         }
-
-        // Redirect to success page
-        window.location.href = `/payment-success?amount=${amount}`;
       } catch (err) {
         console.error(err);
+        setModalStatus({ isOpen: true, status: "failure" });
       } finally {
         setLoading(false);
       }
     };
+
 
     return (
       <form onSubmit={handlePayment} className="p-8">
@@ -689,7 +755,11 @@ const RegistrationFlow = () => {
     <FurtherInfoStep />,
     clientSecret ? (
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <ConfirmationStep />
+        <ConfirmationStep
+          applicationId={applicationId}
+          step1={getValues('step1')}
+          step2={getValues('step2')}
+        />
       </Elements>
     ) : (
       <div className="flex items-center justify-center">
@@ -705,6 +775,11 @@ const RegistrationFlow = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-5">
+      <Modal
+        isOpen={modalStatus.isOpen}
+        status={modalStatus.status}
+        onClose={() => setModalStatus({ isOpen: false, status: "" })}
+      />
       <div className="flex rounded-tr-[40px] w-4/5 shadow-2xl">
         <StepIndicator />
         <div className="w-full">
