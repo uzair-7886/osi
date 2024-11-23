@@ -341,9 +341,8 @@ export default function AnalyticsPage() {
                 {/* Table */}
                 <div className={`flex flex-col md:flex-row`}>
                     <div
-                        className={`flex-1 overflow-x-auto transition-all duration-300 ${
-                            expandedRow !== null ? "md:w-1/2 w-full" : "w-full"
-                        }`}
+                        className={`flex-1 overflow-x-auto transition-all duration-300 ${expandedRow !== null ? "md:w-1/2 w-full" : "w-full"
+                            }`}
                     >
                         <table className="w-full border-collapse border border-gray-300">
                             <thead className="bg-blue-100 text-blue-900">

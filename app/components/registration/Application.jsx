@@ -3,7 +3,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { client } from "@/sanity/lib/client";
 import { logEvent } from "../../lib/analytics"; // Import the batching analytics utility
-import { logEvent } from "../../lib/analytics"; // Import the batching analytics utility
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -90,19 +89,16 @@ const RegistrationFlow = () => {
     if (step === 1) {
       logEvent("registration_form_opened", { page: "/application" });
     }
-    if (step === 1) {
-      logEvent("registration_form_opened", { page: "/application" });
-    }
     if (step === 4) {
       const amount = getValues("payment.amount");
       const step1 = getValues("step1");
       const step2 = getValues("step2");
-      logEvent("open_payment_confirmation", { 
+      logEvent("open_payment_confirmation", {
         full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
         email: step2.email || "N/A",
         mobile: step2.mobile || "N/A",
-        ageGroup: step1.ageGroup || "N/A", 
-        paymentAmount: amount || 0, 
+        ageGroup: step1.ageGroup || "N/A",
+        paymentAmount: amount || 0,
       }, applicationId);
       fetchClientSecret(amount);
     }
@@ -388,98 +384,7 @@ const RegistrationFlow = () => {
     );
   };
 
-  const RegistrationStep = () => {
-    const [formStarted, setFormStarted] = useState(false);
 
-    const handleFocus = () => {
-      if (!formStarted) {
-        logEvent("filling_form");
-        setFormStarted(true);
-      }
-    };
-
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-        <h2 className="text-xl text-orange font-semibold mb-8 text-center">REGISTRATION FORM</h2>
-        <div className="space-y-6 max-w-sm w-full text-[#555555]">
-          <div>
-            <label className="block mb-2">Age Group :</label>
-            <div className="relative">
-              <select
-                {...register('step1.ageGroup')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-                onFocus={handleFocus}
-              >
-                <option value="">Select your age...</option>
-                <option value="13-15">13-15</option>
-                <option value="16-17">16-17</option>
-                <option value="18+">18+</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block mb-2">Subject 1 :</label>
-            <div className="relative">
-              <select
-                {...register('step1.subject1')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-              >
-                <option value="">Select subject ...</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block mb-2">Subject 2 :</label>
-            <div className="relative">
-              <select
-                {...register('step1.subject2')}
-                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-                disabled={isSubmitting}
-              >
-                <option value="">Select subject ...</option>
-                <option value="biology">Biology</option>
-                <option value="computerScience">Computer Science</option>
-                <option value="economics">Economics</option>
-              </select>
-              <img
-                src="/svgs/chev-down.svg"
-                alt="dropdown"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-              />
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-[#003180] text-white px-6 py-3 rounded-full disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Saving...' : 'Apply Now'}
-            </button>
-          </div>
-          <ProgressBars currentStep={step} />
-        </div>
-      </form>
-    );
-  };
-
-  
   const ApplicationStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
       <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
@@ -592,99 +497,99 @@ const RegistrationFlow = () => {
 
   const FurtherInfoStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-    <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
-    <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
-    <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
-      <div>
-        <label className="block mb-2">Your Institution (School/University/Organisation):</label>
-        <div className="relative">
-          <select
-            {...register("step3.institution")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+      <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
+      <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
+        <div>
+          <label className="block mb-2">Your Institution (School/University/Organisation):</label>
+          <div className="relative">
+            <select
+              {...register("step3.institution")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select your institution...</option>
+              <option value="school">School</option>
+              <option value="university">University</option>
+              <option value="organisation">Organisation</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">Institution Name:</label>
+          <input
+            {...register("step3.institutionName")}
+            type="text"
+            placeholder="Enter your Institution name..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
-          >
-            <option value="">Select your institution...</option>
-            <option value="school">School</option>
-            <option value="university">University</option>
-            <option value="organisation">Organisation</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Institution City:</label>
+          <input
+            {...register("step3.institutionCity")}
+            type="text"
+            placeholder="Enter your Institution city..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Institution Country (Optional):</label>
+          <input
+            {...register("step3.institutionCountry")}
+            type="text"
+            placeholder="Enter your Institution country..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
+          />
+        </div>
+        <div>
+          <label className="block mb-2">Visa Requirement (Yes/No):</label>
+          <div className="relative">
+            <select
+              {...register("step3.visaRequirement")}
+              className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+              disabled={isSubmitting}
+            >
+              <option value="">Select requirement...</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <img
+              src="/svgs/chev-down.svg"
+              alt="dropdown"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block mb-2">How Did You Hear About This Program?</label>
+          <input
+            {...register("step3.hearAbout")}
+            type="text"
+            placeholder="Enter response..."
+            className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+            disabled={isSubmitting}
           />
         </div>
       </div>
-      <div>
-        <label className="block mb-2">Institution Name:</label>
-        <input
-          {...register("step3.institutionName")}
-          type="text"
-          placeholder="Enter your Institution name..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
+      <div className="flex justify-center">
+        <button
+          type="submit"
+          className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
           disabled={isSubmitting}
-        />
+        >
+          {isSubmitting ? 'Submitting...' : 'Apply Now'}
+        </button>
       </div>
-      <div>
-        <label className="block mb-2">Institution City:</label>
-        <input
-          {...register("step3.institutionCity")}
-          type="text"
-          placeholder="Enter your Institution city..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Institution Country (Optional):</label>
-        <input
-          {...register("step3.institutionCountry")}
-          type="text"
-          placeholder="Enter your Institution country..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-      <div>
-        <label className="block mb-2">Visa Requirement (Yes/No):</label>
-        <div className="relative">
-          <select
-            {...register("step3.visaRequirement")}
-            className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
-            disabled={isSubmitting}
-          >
-            <option value="">Select requirement...</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <img
-            src="/svgs/chev-down.svg"
-            alt="dropdown"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="block mb-2">How Did You Hear About This Program?</label>
-        <input
-          {...register("step3.hearAbout")}
-          type="text"
-          placeholder="Enter response..."
-          className="w-full p-3 bg-[#EEEEEE] rounded-lg"
-          disabled={isSubmitting}
-        />
-      </div>
-    </div>
-    <div className="flex justify-center">
-      <button
-        type="submit"
-        className="mt-8 bg-[#003180] text-white px-6 py-2 rounded-full disabled:opacity-50"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Submitting...' : 'Apply Now'}
-      </button>
-    </div>
-  </form>
+    </form>
   );
 
   const ConfirmationStep = ({ applicationId, step1, step2 }) => {
@@ -710,7 +615,6 @@ const RegistrationFlow = () => {
           redirect: "if_required",
         });
 
-
         if (error) {
           setErrorMessage(error.message);
           logEvent(
@@ -732,26 +636,23 @@ const RegistrationFlow = () => {
         if (paymentIntent && paymentIntent.status === "succeeded") {
 
           logEvent(
-              "payment_success",
-              {
-                paymentAmount: amount || 0,
-                paymentIntentId: paymentIntent.id || "N/A",
-                currency: paymentIntent.currency || "N/A",
-                full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
-                email: step2.email || "N/A",
-                mobile: step2.mobile || "N/A",
-                ageGroup: step1.ageGroup || "N/A",
-              },
-              applicationId
+            "payment_success",
+            {
+              paymentAmount: amount || 0,
+              paymentIntentId: paymentIntent.id || "N/A",
+              currency: paymentIntent.currency || "N/A",
+              full_name: `${step2.firstName} ${step2.surname}` || "Anonymous",
+              email: step2.email || "N/A",
+              mobile: step2.mobile || "N/A",
+              ageGroup: step1.ageGroup || "N/A",
+            },
+            applicationId
           );
 
 
           await handlePaymentUpdate(applicationId, "completed");
           setModalStatus({ isOpen: true, status: "success" });
         }
-
-        // Redirect to success page
-        window.location.href = `/payment-success?amount=${amount}`;
       } catch (err) {
         console.error(err);
         setModalStatus({ isOpen: true, status: "failure" });
