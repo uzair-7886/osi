@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ProgramMenu from './ProgramMenu';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showProgramMenu, setShowProgramMenu] = useState(false);
+
   const pathname = usePathname();
 
   const toggleMenu = () => {
@@ -27,7 +30,23 @@ const Navbar = () => {
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Home</Link>
                 <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>About</Link>
-                <Link href="/programs" className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Programs</Link>
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setShowProgramMenu(true)}
+                  onMouseLeave={() => setShowProgramMenu(false)}
+                >
+                  <Link 
+                    href={pathname}
+                    className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium inline-block`}
+                  >
+                    Programs
+                  </Link>
+                  {showProgramMenu && (
+                    <div className="absolute left-0 top-full pt-2 w-[700px] z-50">
+                      <ProgramMenu />
+                    </div>
+                  )}
+                </div>
                 <Link href="/why-choose-us" className={`${isActivePage('/why-choose-us') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Why Choose Us</Link>
                 <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Parents</Link>
                 <Link href="/gallery" className={`${isActivePage('/gallery') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Gallery</Link>
