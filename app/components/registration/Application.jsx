@@ -3,6 +3,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { client } from "@/sanity/lib/client";
 import { logEvent } from "../../lib/analytics"; // Import the batching analytics utility
+import { logEvent } from "../../lib/analytics"; // Import the batching analytics utility
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -86,6 +87,9 @@ const RegistrationFlow = () => {
   const { handleSubmit, register, getValues, setValue } = methods;
 
   useEffect(() => {
+    if (step === 1) {
+      logEvent("registration_form_opened", { page: "/application" });
+    }
     if (step === 1) {
       logEvent("registration_form_opened", { page: "/application" });
     }
@@ -292,6 +296,97 @@ const RegistrationFlow = () => {
       </div>
     </div>
   );
+
+  const RegistrationStep = () => {
+    const [formStarted, setFormStarted] = useState(false);
+
+    const handleFocus = () => {
+      if (!formStarted) {
+        logEvent("filling_form");
+        setFormStarted(true);
+      }
+    };
+
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
+        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+        <h2 className="text-xl text-orange font-semibold mb-8 text-center">REGISTRATION FORM</h2>
+        <div className="space-y-6 max-w-sm w-full text-[#555555]">
+          <div>
+            <label className="block mb-2">Age Group :</label>
+            <div className="relative">
+              <select
+                {...register('step1.ageGroup')}
+                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+                disabled={isSubmitting}
+                onFocus={handleFocus}
+              >
+                <option value="">Select your age...</option>
+                <option value="13-15">13-15</option>
+                <option value="16-17">16-17</option>
+                <option value="18+">18+</option>
+              </select>
+              <img
+                src="/svgs/chev-down.svg"
+                alt="dropdown"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block mb-2">Subject 1 :</label>
+            <div className="relative">
+              <select
+                {...register('step1.subject1')}
+                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+                disabled={isSubmitting}
+              >
+                <option value="">Select subject ...</option>
+                <option value="mathematics">Mathematics</option>
+                <option value="physics">Physics</option>
+                <option value="chemistry">Chemistry</option>
+              </select>
+              <img
+                src="/svgs/chev-down.svg"
+                alt="dropdown"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block mb-2">Subject 2 :</label>
+            <div className="relative">
+              <select
+                {...register('step1.subject2')}
+                className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+                disabled={isSubmitting}
+              >
+                <option value="">Select subject ...</option>
+                <option value="biology">Biology</option>
+                <option value="computerScience">Computer Science</option>
+                <option value="economics">Economics</option>
+              </select>
+              <img
+                src="/svgs/chev-down.svg"
+                alt="dropdown"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+              />
+            </div>
+          </div>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-[#003180] text-white px-6 py-3 rounded-full disabled:opacity-50"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Saving...' : 'Apply Now'}
+            </button>
+          </div>
+          <ProgressBars currentStep={step} />
+        </div>
+      </form>
+    );
+  };
 
   const RegistrationStep = () => {
     const [formStarted, setFormStarted] = useState(false);
@@ -615,6 +710,7 @@ const RegistrationFlow = () => {
           redirect: "if_required",
         });
 
+
         if (error) {
           setErrorMessage(error.message);
           logEvent(
@@ -653,6 +749,9 @@ const RegistrationFlow = () => {
           await handlePaymentUpdate(applicationId, "completed");
           setModalStatus({ isOpen: true, status: "success" });
         }
+
+        // Redirect to success page
+        window.location.href = `/payment-success?amount=${amount}`;
       } catch (err) {
         console.error(err);
         setModalStatus({ isOpen: true, status: "failure" });
