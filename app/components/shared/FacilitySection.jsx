@@ -1,7 +1,7 @@
-import React from 'react';
-import { urlFor } from '@/sanity/lib/image';
+import React from "react";
+import { urlFor } from "@/sanity/lib/image";
 
-function FacilitySection({activities}) {
+function FacilitySection({ activities }) {
   // Keep track of activities that have been rendered
   const renderedActivities = new Set();
 
@@ -10,19 +10,20 @@ function FacilitySection({activities}) {
       {activities.map((activity, index) => {
         // Skip activities that have already been rendered
         if (renderedActivities.has(activity)) return null;
-        
+
         // Mark the current activity as rendered
         renderedActivities.add(activity);
 
         // Normal layout for activities at index 0, 2, 4, etc.
         if (index % 4 === 0 || index % 4 === 3) {
           return (
-            <div 
+            <div
               key={index}
-              className={`w-full py-12 px-4 sm:px-6 lg:px-8 `}
+              id={encodeURIComponent(activity.name)} // Add id for scrolling
+              className="w-full py-12 px-4 sm:px-6 lg:px-8"
             >
               <div className="max-w-6xl mx-auto">
-                <div className={`flex flex-col gap-8 lg:flex-row items-center`}>
+                <div className="flex flex-col gap-8 lg:flex-row items-center">
                   <div className="w-full lg:w-1/2 md:space-y-8 space-y-4 px-4">
                     {activity.subtitle && (
                       <h3 className="text-orange uppercase tracking-wide font-semibold text-sm md:text-[22px]">
@@ -32,11 +33,14 @@ function FacilitySection({activities}) {
                     <h3 className="text-2xl md:text-[40px] font-semibold text-black">
                       {activity.subtitle}
                     </h3>
-                    <p className={`leading-relaxed ${index % 4 === 0 ? 'text-grey' : 'text-black'}`}>
+                    <p
+                      className={`leading-relaxed ${index % 4 === 0 ? "text-grey" : "text-black"
+                        }`}
+                    >
                       {activity.description}
                     </p>
                   </div>
-                  
+
                   <div className="w-full lg:w-1/2 px-4">
                     {activity.image && (
                       <div className="rounded-tr-[40px] h-[200px] md:w-[562px] md:h-[312px] overflow-hidden shadow-lg">
@@ -57,15 +61,16 @@ function FacilitySection({activities}) {
         // Two-column layout for activities at index 1 and 2
         if (index % 4 === 1) {
           const nextActivity = activities[index + 1];
-          
+
           // Mark the next activity as rendered to prevent duplicate
           if (nextActivity) {
             renderedActivities.add(nextActivity);
           }
 
           return (
-            <div 
+            <div
               key={index}
+              id={encodeURIComponent(activity.name)} // Add id for scrolling
               className="w-full py-12 px-6 sm:px-6 lg:px-8 bg-[#12243E] bg-opacity-10"
             >
               <div className="max-w-6xl mx-auto">
@@ -98,7 +103,10 @@ function FacilitySection({activities}) {
 
                   {/* Next Activity */}
                   {nextActivity && (
-                    <div className="space-y-8">
+                    <div
+                      id={encodeURIComponent(nextActivity.name)} // Add id for scrolling
+                      className="space-y-8"
+                    >
                       {nextActivity.image && (
                         <div className="rounded-tr-[40px] h-[200px] md:h-[312px] overflow-hidden shadow-lg">
                           <img

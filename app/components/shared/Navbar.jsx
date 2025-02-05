@@ -30,19 +30,21 @@ const Navbar = () => {
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Home</Link>
                 <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>About</Link>
-                <div 
+                <div
                   className="relative"
                   onMouseEnter={() => setShowProgramMenu(true)}
                   onMouseLeave={() => setShowProgramMenu(false)}
                 >
-                  <Link 
-                    href={pathname}
-                    className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium inline-block`}
+                  <button
+                    className={`${isActivePage('/programs') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'
+                      } text-black px-3 py-2 rounded-full text-sm font-medium`}
                   >
                     Programs
-                  </Link>
+                  </button>
                   {showProgramMenu && (
-                    <div className="absolute left-0 top-full pt-2 w-[700px] z-50">
+                    <div
+                      className="absolute left-0 top-full pt-2 w-[700px] z-50"
+                    >
                       <ProgramMenu />
                     </div>
                   )}
