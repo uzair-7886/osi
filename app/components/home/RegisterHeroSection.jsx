@@ -15,7 +15,7 @@ const RegisterHeroSection = () => {
         
         <button 
           className="bg-orange  text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 text-base"
-          onClick={() => console.log('Register clicked')}
+          onClick={() => (window.location.href = "/application")}
         >
           Register Now
         </button>

@@ -7,6 +7,7 @@ import ProgramMenu from './ProgramMenu';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showProgramMenu, setShowProgramMenu] = useState(false);
+  const [showAboutMenu, setShowAboutMenu] = useState(false);
 
   const pathname = usePathname();
 
@@ -29,7 +30,29 @@ const Navbar = () => {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Home</Link>
-                <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>About</Link>
+                {/* <Link href="/about" className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>About</Link> */}
+                <div
+  className="relative"
+  onMouseEnter={() => setShowAboutMenu(true)}
+  onMouseLeave={() => setShowAboutMenu(false)}
+>
+  <button
+    className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'
+      } text-black px-3 py-2 rounded-full text-sm font-medium`}
+  >
+    About
+  </button>
+  {showAboutMenu && (
+    <div className="absolute left-0 top-full pt-2 w-[200px] z-50 bg-white shadow-lg rounded-lg p-2">
+      <Link href="/about" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg">
+        Conference
+      </Link>
+      <Link href="/about" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg">
+        Summer School
+      </Link>
+    </div>
+  )}
+</div>
                 <div
                   className="relative"
                   onMouseEnter={() => setShowProgramMenu(true)}
@@ -53,13 +76,13 @@ const Navbar = () => {
                 <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Parents</Link>
                 <Link href="/gallery" className={`${isActivePage('/gallery') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Gallery</Link>
                 <Link href="/fee-key-dates" className={`${isActivePage('/fee-key-dates') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Fee & Key Dates</Link>
-                <Link href="/contact" className={`${isActivePage('/contact') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Contact Us</Link>
+                {/* <Link href="/contact" className={`${isActivePage('/contact') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Contact Us</Link> */}
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
-            <button className="bg-darkblue text-white w-[157px] h-[41px] rounded-full text-sm font-medium">Register Now</button>
-          </div>
+          <Link href={'/application'} className="hidden md:block">
+            <div className="bg-darkblue text-white w-[157px] h-[41px] rounded-full text-sm font-medium cursor-pointer flex justify-center items-center">Register Now</div>
+          </Link>
           <div className="-mr-2 flex md:hidden">
             <button onClick={toggleMenu} type="button" className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded={isMenuOpen}>
               <span className="sr-only">Open main menu</span>

@@ -61,9 +61,9 @@ async function page() {
         <>
             <HeroBanner text="About Us" />
             <Intro />
-            <OurTeam />
             <MethodologySection />
             <Tutors />
+            <OurTeam />
             <Deans />
             <SummerBanner />
         </>

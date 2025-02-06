@@ -319,7 +319,7 @@ const RegistrationFlow = () => {
               >
                 <option value="">Select your age...</option>
                 <option value="13-15">13-15</option>
-                <option value="16-17">16-17</option>
+                <option value="16-17">16-18</option>
                 <option value="18+">18+</option>
               </select>
               <img
@@ -338,9 +338,9 @@ const RegistrationFlow = () => {
                 disabled={isSubmitting}
               >
                 <option value="">Select subject ...</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
+                <option value="mathematics">Physical Sciences</option>
+                <option value="physics">Social Sciences</option>
+                <option value="chemistry">Humanities</option>
               </select>
               <img
                 src="/svgs/chev-down.svg"
@@ -358,9 +358,9 @@ const RegistrationFlow = () => {
                 disabled={isSubmitting}
               >
                 <option value="">Select subject ...</option>
-                <option value="biology">Biology</option>
-                <option value="computerScience">Computer Science</option>
-                <option value="economics">Economics</option>
+                <option value="mathematics">Physical Sciences</option>
+                <option value="physics">Social Sciences</option>
+                <option value="chemistry">Humanities</option>
               </select>
               <img
                 src="/svgs/chev-down.svg"

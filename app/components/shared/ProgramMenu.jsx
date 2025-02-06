@@ -25,7 +25,7 @@ const ProgramMenu = ({ isMobile = false }) => {
 
   const sections = {
     Programme: {
-      title: "Programme",
+      title: "Subjects",
       description: "Explore our programs",
       fields: programFields, // Dynamically populated from Sanity
     },

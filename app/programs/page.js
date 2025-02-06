@@ -1,3 +1,4 @@
+'use client'
 import HeroBanner from '../components/shared/HeroBanner';
 import SummerBanner from '../components/shared/SummerBanner';
 import SubjectSwitcher from '../components/programs/SubjectSwitcher';

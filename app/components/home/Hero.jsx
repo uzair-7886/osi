@@ -38,7 +38,7 @@ const Hero = ({ initialData }) => {
                 <p className="text-white text-xl sm:text-2xl mb-8">
                   {initialData.date}
                 </p>
-                <button className="bg-darkblue text-white px-8 py-3 rounded-full text-lg font-semibold">
+                <button onClick={() => (window.location.href = "/application")} className="bg-darkblue text-white px-8 py-3 rounded-full text-lg font-semibold">
                   {initialData.buttonText}
                 </button>
               </>
