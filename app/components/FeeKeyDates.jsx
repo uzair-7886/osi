@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 const FeeKeyDates = () => {
   const programs = [
@@ -77,11 +78,10 @@ const FeeKeyDates = () => {
                 {program.price}
               </p>
               <div className="text-center">
-                <button
-                // onClick={() => (window.location.href = "/application")} 
+                <Link href="/application"
                 className="bg-darkblue rounded-lg text-white px-6 py-2 font-medium hover:bg-opacity-90">
                   APPLY NOW
-                </button>
+                </Link>
               </div>
             </div>
           </div>
