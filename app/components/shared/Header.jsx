@@ -5,7 +5,7 @@ const Header = () => {
     <header className="bg-darkblue text-white py-2 h-[61px] hidden md:flex items-center justify-center ">
       <div className="container  px-2 sm:px-4 flex justify-between items-center ">
         <div className="text-[20px] font-semibold">
-          OSI
+          OCL
         </div>
         <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 ">
           <a href="tel:+1234-123-1234" className="flex items-center gap-2">

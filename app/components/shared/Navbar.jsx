@@ -24,9 +24,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:h-[80px] md:text-[16px] font-medium">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <div className="text-lg font-semibold md:hidden text-darkblue">
+            {/* <div className="text-lg font-semibold md:hidden text-darkblue">
               OCI
-            </div>
+            </div> */}
+            <Link href="/">
+              <img src="/logo.jpeg" alt="Logo" className="h-12 sm:h-10 w-auto" />
+            </Link>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 <Link href="/" className={`${isActivePage('/') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Home</Link>
