@@ -12,8 +12,10 @@ const ProgramCard = ({ title, ageRange, imageUrl }) => {
           {title}
         </h3>
         <p className="text-black text-base">
-          For ages {ageRange}
-        </p>
+  {ageRange.trim() === "Emerging Leaders" 
+    ? "Emerging Leaders" 
+    : `For ages ${ageRange}`}
+</p>
       </div>
     );
   };

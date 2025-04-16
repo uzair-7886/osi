@@ -24,25 +24,25 @@ const DownloadBrochureHeroSection = () => {
     return (
         <section className="relative w-full py-16 px-16 md:py-24 md:px-24"> {/* Reduced padding */}
             <div className="max-w-7xl mx-auto md:flex-row items-center">
-                <h2 className='text-center text-orange text-lg font-semibold'>{data.heading}</h2>
-                <h1 className="text-center mb-6 text-[26px] font-semibold text-gray-900">
+                <h2 className='text-center text-orange text-lg font-semibold mb-6'>{data.heading}</h2>
+                {/* <h1 className="text-center mb-6 text-[26px] font-semibold text-gray-900">
                     {data.sub_heading}
-                </h1>
+                </h1> */}
 
-                <p className="text-base text-black mx-auto">
-                    At the <span className="text-orange font-semibold">Oxford Summer Institute (OSI)</span>, we are dedicated to providing an immersive academic and cultural experience in one of the world's most prestigious educational environments. For over a decade, our non-profit institution has brought together students from across the globe to study in the hallowed halls of the University of Oxford. Our program is accredited by the <span className="text-orange font-semibold">British Accreditation Council (BAC)</span> as a short and further education provider, ensuring that students receive a high standard of learning and support.
+                <p className="text-base text-grey mx-auto py-2 text-justify">
+                The Oxford Centre for Leadership is an independent, non-profit organisation established by current and former academics, scholars and policymakers at University of Oxford to nurture the next generation of socially conscious, technologically adept and entrepreneurial leaders. 
                 </p>
-                <p className="text-base text-black mx-auto">
-                    While OSI is not an official part of the University of Oxford, we proudly partner with its constituent colleges and departments to give our students unparalleled access to the Oxford experience. All of our tutors, lecturers, deans, and other staff members are associated with the University of Oxford, providing students with the opportunity to learn from current and former Oxford academics.
+                <p className="text-base text-grey mx-auto py-2 text-justify">
+                At the Oxford Centre for Leadership, we understand the complexities and challenges of today's polarised world. Recognizing the pivotal role of young leaders in steering us towards a more equitable and sustainable future, our programs are meticulously designed to foster generational dialogue, enhance skill development, and amplify the voices of historically marginalised segments of society.
                 </p>
-                <p className="text-base text-black mx-auto">
-                    Our program is designed to inspire the next generation of leaders, thinkers, and innovators by combining rigorous academics with enriching extracurricular activities. At OSI, students aged 15 to 25 will have the chance to explore subjects ranging from STEM to the humanities, all while experiencing the traditions, values, and spirit of this historic institution.
+                <p className="text-base text-grey mx-auto py-2 text-justify">
+                Our leadership programs are designed with Oxford heritage in mind, ensuring that the same principles and methodologies that guided remarkable leaders are available to you. We provide more than just courses; we offer transformative experiences that blend Oxford's proven methods with the latest in leadership practices. 
                 </p>
-                <p className="text-base text-black mx-auto">
-                    Our curriculum is crafted to challenge and engage students, helping them develop critical thinking, debating, and communication skills. Whether delving into philosophy, tackling STEM challenges, or exploring the arts, students are guided by world-class instructors in an environment that fosters curiosity and collaboration.
+                <p className="text-base text-grey py-2  mx-auto text-justify">
+                The Centre therefore offers the Oxford Summer Program for students in the age group of 15-20 and the Oxford Executive Leadership Program for emerging leaders in public, private and non-profit sector organisations. The Centre also manages the Oxford Leadership Network which provides a platform for the members to engage in a year-round interaction. 
                 </p>
-                <p className="text-base text-black mx-auto">
-                    The <span className="text-orange font-semibold">Oxford Summer Institute</span> experience is not just about academics; it’s about creating lasting memories, forging lifelong friendships, and preparing students for future academic and career success.
+                <p className="text-base text-grey py-2 text-justify mx-auto">
+                The Centre’s flagship annual Oxford Leadership Conference brings together world leaders in the realms of business, technology and public policy as well as emerging leaders from all fields of life for an immersive learning experience. This unique event is not just a milestone but a gateway to unparalleled insights and skills refined over centuries at Oxford, now reimagined for the contemporary leadership landscape.
                 </p>
             </div>
 

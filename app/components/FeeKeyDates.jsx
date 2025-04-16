@@ -6,7 +6,7 @@ const FeeKeyDates = () => {
     {
       duration: "2 Weeks",
       title: "Oxford Summer Program",
-      dates: "2nd August – 14th August 2025",
+      dates: "18th August – 29th August 2025 ",
       price: "£5,999/-",
       items: [
         "TUITION FEE",
@@ -19,8 +19,8 @@ const FeeKeyDates = () => {
     {
       duration: "8 Days",
       title: "Oxford Executive Leadership Program",
-      dates: "2nd August – 14th August 2025",
-      price: "£7,999/-",
+      dates: "18th August – 23rd August 2025",
+      price: "£6,999/-",
       items: [
         "TUITION FEE",
         "MEALS",
@@ -29,24 +29,12 @@ const FeeKeyDates = () => {
         "ACCOMMODATION",
       ],
     },
-    {
-      duration: "2 Weeks",
-      title: "Oxford China Summer Program",
-      dates: "July / August 2025, Exact Dates TBC",
-      price: "£2,999/-",
-      items: [
-        "TUITION FEE",
-        "MEALS",
-        "TRANSPORTATION WITHIN UK",
-        "STUDY MATERIAL",
-        "ACCOMMODATION",
-      ],
-    },
+
   ];
 
   return (
     <div className="flex justify-center items-center px-4 py-8 my-8">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
         {programs.map((program, index) => (
           <div
             key={index}

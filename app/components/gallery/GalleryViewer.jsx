@@ -2,6 +2,7 @@
 import { Expand, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import { urlFor } from '@/sanity/lib/image';
+import Image from 'next/image';
 
 export default function GalleryViewer({ initialData }) {
   const [activeSection, setActiveSection] = useState(initialData.sections[0]);
@@ -171,7 +172,7 @@ export default function GalleryViewer({ initialData }) {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {activeSection.images?.map((item, index) => (
               <div
                 key={index}
@@ -179,13 +180,15 @@ export default function GalleryViewer({ initialData }) {
                 className="group relative cursor-pointer"
               >
                 <div className="aspect-[4/3] overflow-hidden rounded-tr-[35px]">
-                  <img
+                  <Image
                     src={urlFor(item.image)
                       .width(340)
                       .height(240)
                       .quality(90)
                       .url()}
                     alt={item.alt}
+                    width={340}         
+  height={240} 
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center rounded-tr-[35px]">

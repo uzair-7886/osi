@@ -2,7 +2,7 @@ import React from 'react';
 
 const TallCard = ({ image, title }) => {
   return (
-    <div className="relative group overflow-hidden rounded-tr-3xl h-auto row-span-2">
+    <div className="relative group overflow-hidden rounded-tr-3xl h-[500px] row-span-2">
       <img
         src={image}
         alt={title}

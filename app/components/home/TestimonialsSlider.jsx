@@ -75,7 +75,7 @@ const TestimonialsSlider = () => {
           </div>
           
           <div className="md:w-1/2">
-            <div className="bg-white rounded-3xl p-8 shadow-lg">
+            <div className="bg-white rounded-3xl p-8 shadow-lg h-80">
               <img src="/svgs/q.svg" alt="quotes" className='mb-6'/>
               <p className="text-gray-700 text-lg mb-8">
                 {testimonials[currentSlide].text}

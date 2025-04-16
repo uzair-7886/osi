@@ -72,7 +72,7 @@ const MethodologySection = () => {
                                 <h3 className="text-orange text-lg font-bold">
                                     {index + 1}. {methodology.title}
                                 </h3>
-                                <p className="text-gray">{methodology.description}</p>
+                                <p className="text-grey">{methodology.description}</p>
                             </div>
                         ))}
                 </div>

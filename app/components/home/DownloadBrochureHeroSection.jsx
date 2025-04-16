@@ -13,11 +13,17 @@ Our Brochure        </h1>
         Get all the details you need about our programs, courses, and student life at Oxford Summer Institute. Download our brochure and take the first step towards an unforgettable summer experience!        </p>
         
         <button 
-          className="bg-orange  text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 text-base"
+          className="bg-orange  text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 text-base mx-4"
           onClick={() => console.log('Register clicked')}
         >
-          Download Now
+          Oxford Summer Program
         </button>
+        <button 
+          className="bg-orange  text-white font-semibold py-3 px-8 rounded-full transition-colors duration-200 text-base mx-4"
+          onClick={() => console.log('Register clicked')}
+        >
+          Oxford Executive Program
+          </button>
       </div>
       
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100 opacity-50 -z-10"></div>
