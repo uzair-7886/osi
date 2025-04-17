@@ -4,6 +4,7 @@ import React from 'react';
 import { urlFor } from '@/sanity/lib/image'; // Ensure the correct path
 import { client } from "@/sanity/lib/client";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 
 const OurTeam = () => {
     const [data, setData] = useState(null);
@@ -40,7 +41,11 @@ const OurTeam = () => {
                     <h2 className="text-orange text-lg font-semibold uppercase mb-2">Our Team</h2>
                     <h3 className="text-3xl font-bold text-gray-800 mb-6">{sub_heading}</h3>
                     <p className="text-gray-600 text-lg leading-relaxed">{description}</p>
+
+                    
                 </div>
+
+ 
 
                 {/* Image Section */}
                 <div className="md:w-5/12 pt-12 flex flex-col md:flex-row items-center md:items-start justify-between md:ml-10">

@@ -6,7 +6,7 @@ const HeroBanner = ({ text }) => {
       <img 
         src="/images/banner.png"
         alt="Banner background"
-        className="w-full h-auto object-cover"
+        className="w-full object-cover object-top"
       />
       
       <div className="absolute inset-0 bg-black/10" />

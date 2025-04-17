@@ -16,7 +16,7 @@ const TutorCard = ({ name, description, image }) => {
       {/* Tutor Info Card */}
           <div className="-translate-y-10 relative bottom-0 left-0 w-11/12 bg-white p-6 rounded-tr-3xl rounded-bl-lg -mb-6">
         <h3 className="text-orange text-lg font-bold uppercase mb-2">{name}</h3>
-        <p className="text-gray-600 text-sm leading-relaxed">{description}</p>
+        <p className="text-gray-600 text-sm leading-relaxed text-justify">{description}</p>
       </div>
     </div>
   );

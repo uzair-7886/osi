@@ -6,6 +6,9 @@ import OurTeam from "../components/About/OurTeam";
 import MethodologySection from "../components/About/Methodology";
 import Tutors from "../components/About/Tutors";
 import Deans from "../components/About/Deans";
+import CampusHead from '../components/About/CampusHead';
+// import TutorsSection from '../components/About/Tutors';
+import TutorsSection from '../components/About/TutorsSection';
 import { client } from "@/sanity/lib/client";
 
 // lets see
@@ -64,6 +67,8 @@ async function page() {
             <MethodologySection />
             <Tutors />
             <OurTeam />
+            <CampusHead />
+            <TutorsSection/>
             <Deans />
             <SummerBanner />
         </>
