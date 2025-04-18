@@ -12,6 +12,27 @@ const availablePages = [
   { title: 'Parents', href: '/parents' }
 ];
 
+const socials = [
+  {
+    name: "linkedin",
+    href: "https://www.linkedin.com/company/oxfordcentreforleadership/",
+    icon: "/svgs/in.svg",
+    alt: "LinkedIn",
+  },
+  {
+    name: "facebook",
+    href: "https://www.facebook.com/profile.php?id=61554309702206",
+    icon: "/svgs/fb.svg",
+    alt: "Facebook",
+  },
+  {
+    name: "instagram",
+    href: "https://www.instagram.com/oxfordcentreforleadership/",
+    icon: "/svgs/insta.svg",
+    alt: "Instagram",
+  },
+];
+
 const Footer = () => {
   return (
     <div>
@@ -57,18 +78,18 @@ const Footer = () => {
             <div className="mt-6">
               <h4 className="text-lg font-semibold mb-3">Follow Us on</h4>
               <div className="flex space-x-4">
-                {['linkedin', 'facebook', 'instagram'].map((social) => (
-                  <Link
-                    key={social}
-                    href="/"
-                    className="text-blue-900 hover:text-blue-800 transition-colors"
-                  >
-                    <span className="sr-only">{social}</span>
-                    {social === 'linkedin' && <img src="/svgs/in.svg" alt="LinkedIn" />}
-                    {social === 'facebook' && <img src="/svgs/fb.svg" alt="Facebook" />}
-                    {social === 'instagram' && <img src="/svgs/insta.svg" alt="Instagram" />}
-                  </Link>
-                ))}
+              {socials.map(({ name, href, icon, alt }) => (
+        <Link
+          key={name}
+          href={href}
+          className="text-blue-900 hover:text-blue-800 transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="sr-only">{name}</span>
+          <img src={icon} alt={alt} className="h-6 w-6" />
+        </Link>
+      ))}
               </div>
             </div>
           </div>

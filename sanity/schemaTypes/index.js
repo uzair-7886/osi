@@ -25,6 +25,10 @@ import { faqSection } from "./faqpage"
 import gallery from "./gallery"
 import analyticsBatch from "./analyticsBatch"
 import registration from "./registration"
+import healthSafety from "./healthSafety"
+import protocol from "./protocol"
+import studentCodeOfConduct from "./studentCodeOfConduct"
+import  termsAndConditions  from "./termsAndConditions"
 
 export const schema = {
   types: [
@@ -51,5 +55,9 @@ export const schema = {
     enrolledUser,
     payment,
     analyticsBatch,
+    healthSafety,
+    termsAndConditions,
+    studentCodeOfConduct,
+    protocol,
   ],
 }

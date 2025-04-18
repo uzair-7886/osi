@@ -19,7 +19,17 @@ const DownloadBrochureHeroSection = () => {
     }, []);
 
     if (!data) {
-        return <div>Loading...</div>;
+        const widths = ["w-full", "w-5/6", "w-4/6", "w-3/6", "w-2/6"];
+  return (
+    <div className=" mx-auto py-10 max-w-7xl space-y-3 animate-pulse">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className={`h-4 bg-gray-200 rounded ${widths[i % widths.length]}`}
+        />
+      ))}
+    </div>
+  )
     }
     return (
         <section className="relative w-full py-16 px-16 md:py-24 md:px-24"> {/* Reduced padding */}

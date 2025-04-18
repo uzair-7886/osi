@@ -60,7 +60,7 @@ const OurTeam = () => {
                                 <img
                                     src={urlFor(images[0].image).url()}
                                     alt={images[0].name}
-                                    className="rounded-3xl object-cover w-full h-full"
+                                    className="rounded-3xl object-cover object-top w-full h-full"
                                 />
                             </div>
 

@@ -1,55 +1,77 @@
-// src/components/HealthAndSafety.jsx
-import React from 'react';
+'use client'
 
-const healthSafetyContent = {
-  title: 'Health & Safety',
-  intro: [
-    'We prioritise the health and safety of our students, ensuring their experience is secure, enjoyable, and well‑supported.',
-    'Depending on the age group, students are accompanied at all times by experienced staff members and residential mentors (deans) during program activities. Deans also live on‑site at the students’ accommodation halls, providing 24/7 supervision and support.'
-  ],
-  protocols: [
-    {
-      title: 'Safeguarding & Child Protection',
-      description:
-        'All staff members are trained in safeguarding practices, adhering to UK government regulations to maintain a safe and supportive environment for students of all ages.'
-    },
-    {
-      title: 'DBS Checks',
-      description:
-        'We conduct thorough background checks, including Disclosure and Barring Service (DBS) screenings, for all staff, mentors, and associated team members to ensure the highest standards of safety and well‑being.'
-    },
-    {
-      title: 'Monitored & Secure Premises',
-      description:
-        'The college facilities are equipped with monitored entry and exit points, CCTV surveillance, and fire and safety alarms to provide a secure environment.'
-    },
-    {
-      title: '24‑Hour Hotline for Parents',
-      description:
-        'A dedicated 24‑hour hotline is available for parents to reach their children or program staff at any time.'
-    },
-    {
-      title: 'First Aid & Risk Management',
-      description:
-        'First aid services are accessible at all times, and we perform comprehensive risk assessments for all activities, ensuring effective measures are in place to mitigate and minimise any risks.'
-    }
-  ]
-};
+import React, { useEffect, useState } from 'react'
+import { PortableText } from '@portabletext/react'
+import { client } from '@/sanity/lib/client'
 
 const HealthAndSafety = () => {
-  const { title, intro, protocols } = healthSafetyContent;
+  const [content, setContent] = useState(null)
+
+  useEffect(() => {
+    const query = `*[_type == "healthSafety"][0]{
+      title,
+      intro,
+      protocols[]{title, description}
+    }`
+    client
+      .fetch(query)
+      .then(data => setContent(data))
+      .catch(err => console.error('Sanity fetch error:', err))
+  }, [])
+
+  // ─── Skeleton Loader ──────────────────────────────────────────────────────────
+  if (!content) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="animate-pulse space-y-6">
+          {/* Title skeleton */}
+          <div className="h-10 bg-gray-200 rounded w-1/3 mx-auto" />
+
+          {/* Intro skeleton */}
+          <div className="space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-full" />
+            <div className="h-4 bg-gray-200 rounded w-5/6" />
+          </div>
+
+          {/* Protocols grid skeleton */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[1, 2, 3, 4].map(n => (
+              <div
+                key={n}
+                className="h-32 bg-gray-200 rounded"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ─── Real Content ────────────────────────────────────────────────────────────
+  const { title, intro, protocols } = content
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Page title */}
-      <h1 className="text-4xl font-bold text-orange mb-6 text-center">{title}</h1>
+      <h1 className="text-4xl font-bold text-orange mb-6 text-center">
+        {title}
+      </h1>
 
-      {/* Intro paragraphs */}
-      {intro.map((text, i) => (
-        <p key={i} className="text-base text-center text-grey leading-relaxed mb-4">
-          {text}
-        </p>
-      ))}
+      {/* Intro: rich text */}
+      <div className="prose prose-lg mx-auto mb-8">
+        <PortableText
+          value={intro}
+          components={{
+            block: {
+              normal: ({ children }) => (
+                <p className="text-base text-center text-grey leading-relaxed mb-4">
+                  {children}
+                </p>
+              )
+            }
+          }}
+        />
+      </div>
 
       {/* Protocols grid */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -68,7 +90,7 @@ const HealthAndSafety = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HealthAndSafety;
+export default HealthAndSafety

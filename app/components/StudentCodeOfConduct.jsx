@@ -1,3 +1,210 @@
+// 'use client'
+
+// import React, { useEffect, useState } from 'react'
+// import { client } from '@/sanity/lib/client'
+
+// /** Add parentheses to numbered sub‑items */
+// function addParens(src) {
+//   return src.replace(
+//     /^(\s*)([a-z])(\s{2,})/gm,
+//     (_, indent, letter, spaces) => `${indent}(${letter})${spaces}`
+//   )
+// }
+
+// /** Slugify for section IDs */
+// function slugify(text) {
+//   return text
+//     .toLowerCase()
+//     .replace(/[^a-z0-9]+/g, '-')
+//     .replace(/(^-|-$)/g, '')
+// }
+
+// const StudentCodeOfConduct = () => {
+//   const [raw, setRaw] = useState(null)
+
+//   useEffect(() => {
+//     client
+//       .fetch(`*[_type=="studentCodeOfConduct"][0]{ rawContent }`)
+//       .then(data => setRaw(data?.rawContent ?? ''))
+//       .catch(err => console.error('Sanity fetch error:', err))
+//   }, [])
+
+//   // ─── Skeleton Loader ──────────────────────────────────────────────────────────
+//   if (raw === null) {
+//     return (
+//       <div className="max-w-5xl mx-auto px-6 py-10">
+//         <div className="animate-pulse space-y-6">
+//           {/* Title */}
+//           <div className="h-10 bg-gray-200 rounded w-1/3 mx-auto" />
+
+//           {/* TOC */}
+//           <div className="space-y-2">
+//             <div className="h-5 bg-gray-200 rounded w-1/4" />
+//             <div className="h-5 bg-gray-200 rounded w-1/4" />
+//             <div className="h-5 bg-gray-200 rounded w-1/4" />
+//           </div>
+
+//           {/* Sections */}
+//           <div className="h-6 bg-gray-200 rounded w-full" />
+//           <div className="h-32 bg-gray-200 rounded w-full" />
+//         </div>
+//       </div>
+//     )
+//   }
+
+//   // ─── Parse & Render ───────────────────────────────────────────────────────────
+//   const text = addParens(raw)
+//   const lines = text.trim().split('\n')
+
+//   // build TOC entries
+//   const mainSections = [
+//     { title: 'Student rules', id: 'student-rules' },
+//     { title: 'Behaviour guidelines', id: 'behaviour-guidelines' },
+//     { title: 'Rules and discipline', id: 'rules-discipline' },
+//     { title: 'Rules', id: 'rules' },
+//   ]
+
+//   // build numbered rules
+//   const ruleSections = []
+//   let current = null, buffer = []
+//   lines.forEach(line => {
+//     const m = line.match(/^(\d+)\s+(.+)/)
+//     if (m) {
+//       if (current) {
+//         ruleSections.push({ ...current, content: buffer.join('\n') })
+//         buffer = []
+//       }
+//       current = {
+//         number: m[1],
+//         title: m[2].trim(),
+//         id: slugify(`${m[1]}-${m[2]}`),
+//       }
+//     } else if (current) {
+//       buffer.push(line)
+//     }
+//   })
+//   if (current) ruleSections.push({ ...current, content: buffer.join('\n') })
+
+//   // extract Behaviour guidelines
+//   const guideMatch = text.match(
+//     /Behaviour guidelines\s+([\s\S]*?)(?=Rules and discipline)/
+//   )
+//   const guides = guideMatch
+//     ? guideMatch[1]
+//         .trim()
+//         .split('•')
+//         .filter(Boolean)
+//         .map(s => s.trim())
+//     : []
+
+//   return (
+//     <div className="max-w-5xl mx-auto px-6 py-10 text-grey">
+//       {/* Title */}
+//       <h1 className="text-4xl font-bold text-orange text-center mb-8">
+//         Student Code of Conduct
+//       </h1>
+
+//       {/* TOC */}
+//       <nav className="mb-10 bg-gray-50 p-6 rounded-lg shadow-sm">
+//         <h2 className="text-xl font-semibold text-orange mb-4">Contents</h2>
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+//           {mainSections.map(s => (
+//             <a
+//               key={s.id}
+//               href={`#${s.id}`}
+//               className="hover:text-orange hover:underline"
+//             >
+//               {s.title}
+//             </a>
+//           ))}
+//           {ruleSections.map(r => (
+//             <a
+//               key={r.id}
+//               href={`#${r.id}`}
+//               className="hover:text-orange hover:underline"
+//             >
+//               {r.number}. {r.title}
+//             </a>
+//           ))}
+//         </div>
+//       </nav>
+
+//       {/* Student rules */}
+//       <section id="student-rules" className="mb-12">
+//         <h2 className="text-2xl font-semibold text-orange mb-4">
+//           Student rules
+//         </h2>
+//         <div className="space-y-4 leading-relaxed text-justify">
+//           {lines
+//             .slice(0, 2)
+//             .map((p, i) => <p key={i}>{p.trim()}</p>)}
+//         </div>
+//       </section>
+
+//       {/* Behaviour guidelines */}
+//       <section id="behaviour-guidelines" className="mb-12">
+//         <h2 className="text-2xl font-semibold text-orange mb-4">
+//           Behaviour guidelines
+//         </h2>
+//         <p className="mb-4">
+//           We expect our students to make the most of their stay with us by
+//           following the guidelines below.
+//         </p>
+//         <div className="grid md:grid-cols-2 gap-4">
+//           {guides.map((g, i) => {
+//             const [title, ...desc] = g.split(/\s+/)
+//             return (
+//               <div
+//                 key={i}
+//                 className="bg-orange bg-opacity-5 p-4 rounded-lg shadow-sm"
+//               >
+//                 <h3 className="font-semibold text-orange">{title}</h3>
+//                 <p>{desc.join(' ')}</p>
+//               </div>
+//             )
+//           })}
+//         </div>
+//       </section>
+
+//       {/* Rules and discipline */}
+//       <section id="rules-discipline" className="mb-12">
+//         <h2 className="text-2xl font-semibold text-orange mb-4">
+//           Rules and discipline
+//         </h2>
+//         <div className="space-y-4 leading-relaxed text-justify">
+//           {lines
+//             .slice(
+//               lines.findIndex(l => l.startsWith('Rules and discipline')) + 1,
+//               lines.findIndex(l => /^\d+\s+/.test(l))
+//             )
+//             .map((p, i) => <p key={i}>{p.trim()}</p>)}
+//         </div>
+//       </section>
+
+//       {/* Numbered Rules */}
+//       <section id="rules">
+//         {ruleSections.map(r => (
+//           <div
+//             key={r.id}
+//             id={r.id}
+//             className="mb-8 border-l-4 border-orange pl-4"
+//           >
+//             <h3 className="text-xl font-semibold text-orange mb-3">
+//               {r.number}. {r.title}
+//             </h3>
+//             <div className="whitespace-pre-line leading-relaxed text-justify">
+//               {r.content}
+//             </div>
+//           </div>
+//         ))}
+//       </section>
+//     </div>
+//   )
+// }
+
+// export default StudentCodeOfConduct
+
+
 // src/components/StudentCodeOfConduct.jsx
 import React from 'react'
 

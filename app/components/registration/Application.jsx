@@ -610,7 +610,7 @@ const RegistrationFlow = () => {
         const { error, paymentIntent } = await stripe.confirmPayment({
           elements,
           confirmParams: {
-            return_url: `https://osi-liard.vercel.app/payment-success?amount=${amount}`,
+            return_url: `/payment-success?amount=${amount}`,
           },
           redirect: "if_required",
         });
