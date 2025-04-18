@@ -8,11 +8,11 @@ function BottomBar() {
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-gray-400">
           <p className="">© Copyrights Oxford Center for Leadership</p>
           <div className="flex space-x-6">
-            <Link href="/" className=" hover:text-blue-900 transition-colors">
+            <Link href="/terms-and-conditions" className=" hover:text-blue-900 transition-colors">
               Terms and Conditions
             </Link>
-            <Link href="/" className=" hover:text-blue-900 transition-colors">
-              Privacy Policy
+            <Link href="/student-code-of-conduct" className=" hover:text-blue-900 transition-colors">
+              Student Code of Conduct
             </Link>
             
           </div>
