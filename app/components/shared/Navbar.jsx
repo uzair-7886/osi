@@ -20,9 +20,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white">
+    <nav className="bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-6  md:h-[80px] md:text-[16px] font-medium">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 ">
           <div className="flex items-center">
             {/* <div className="text-lg font-semibold md:hidden text-darkblue">
               OCI

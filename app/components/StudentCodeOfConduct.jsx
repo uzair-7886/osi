@@ -637,8 +637,8 @@ const StudentCodeOfConduct = () => {
         <h2 className="text-2xl font-semibold text-orange mb-4">Rules</h2>
         
         {ruleSections.map((rule, index) => (
-          <div id={rule.id} key={rule.id} className="mb-8 border-l-4 border-orange pl-4">
-            <h3 className="text-xl font-semibold text-orange mb-3">
+          <div id={rule.id} key={rule.id} className="mb-8  border-l-4 border-orange pl-4">
+            <h3 className="text-xl font-semibold text-orange mb-3 ">
               {rule.number}. {rule.title}
             </h3>
             <div className="whitespace-pre-line text-grey leading-relaxed text-justify">
