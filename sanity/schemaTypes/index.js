@@ -29,9 +29,11 @@ import healthSafety from "./healthSafety"
 import protocol from "./protocol"
 import studentCodeOfConduct from "./studentCodeOfConduct"
 import  termsAndConditions  from "./termsAndConditions"
+import executiveProgram from "./executiveProgram"
 
 export const schema = {
   types: [
+    executiveProgram,
     registration,
     HeroSection,
     testimonials,
