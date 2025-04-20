@@ -30,10 +30,12 @@ import protocol from "./protocol"
 import studentCodeOfConduct from "./studentCodeOfConduct"
 import  termsAndConditions  from "./termsAndConditions"
 import executiveProgram from "./executiveProgram"
+import conference from "./conference"
 
 export const schema = {
   types: [
     executiveProgram,
+    conference,
     registration,
     HeroSection,
     testimonials,
