@@ -73,13 +73,40 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-                <Link href="/why-choose-us" className={`${isActivePage('#') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Executive Program</Link>
+                <Link href="/oxford-executive-program" className={`${isActivePage('#') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Executive Program</Link>
                 <Link href="/why-choose-us" className={`${isActivePage('/why-choose-us') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Why Choose Us</Link>
                 <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Parents</Link>
-                <Link href="/why-choose-us" className={`${isActivePage('#') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Leadership Conference</Link>
+                <Link href="/oxford-leadership-conference" className={`${isActivePage('#') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Leadership Conference</Link>
                 <Link href="/gallery" className={`${isActivePage('/gallery') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Gallery</Link>
-                <Link href="/fee-key-dates" className={`${isActivePage('/fee-key-dates') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Fee & Key Dates</Link>
-                {/* <Link href="/contact" className={`${isActivePage('/contact') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Contact Us</Link> */}
+                {/* <Link href="/fee-key-dates" className={`${isActivePage('/fee-key-dates') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Fee & Key Dates</Link> */}
+                                <div
+  className="relative"
+  onMouseEnter={() => setShowAboutMenu(true)}
+  onMouseLeave={() => setShowAboutMenu(false)}
+>
+  <button
+    className={`${isActivePage('/about') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'
+      } text-black px-3 py-2 rounded-full text-sm font-medium`}
+  >
+    Resources
+  </button>
+  {showAboutMenu && (
+    <div className="absolute left-0 top-full pt-2  w-[250px] z-50 bg-white shadow-lg rounded-lg p-2">
+      <Link href="/fee-key-dates" className="block px-4 py-2 text-sm text-grey hover:bg-gray-100 rounded-lg">
+        Fee and Key dates
+      </Link>
+      <Link href="/health-and-safety" className="block px-4 py-2 text-sm text-grey hover:bg-gray-100 rounded-lg">
+        Health and Safety
+      </Link>
+      <Link href="/terms-and-conditions" className="block px-4 py-2 text-sm text-grey hover:bg-gray-100 rounded-lg">
+Terms and Conditions      </Link>
+<Link href="/student-code-of-conduct" className="block px-4 py-2 text-sm text-grey hover:bg-gray-100 rounded-lg">
+        Student Code of Conduct
+      </Link>
+    </div>
+  )}
+</div>
+                
               </div>
             </div>
           </div>

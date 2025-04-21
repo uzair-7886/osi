@@ -556,7 +556,7 @@ const StudentCodeOfConduct = () => {
       </h1>
 
       {/* Table of contents */}
-      <nav className="mb-10 bg-gray-50 p-6 rounded-lg shadow-sm">
+      {/* <nav className="mb-10 bg-gray-50 p-6 rounded-lg shadow-sm">
         <h2 className="text-xl font-semibold text-orange mb-4">Contents</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
           {mainSections.map(section => (
@@ -578,7 +578,7 @@ const StudentCodeOfConduct = () => {
             </a>
           ))}
         </div>
-      </nav>
+      </nav> */}
 
       {/* Introduction */}
       <section id="student-rules" className="mb-12">

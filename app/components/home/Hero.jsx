@@ -9,14 +9,13 @@ const Hero = ({ initialData }) => {
 
   return (
     <div className="relative h-screen w-full">
-      <div
-        className="absolute inset-0 w-full h-full"
-        style={{
+       <div
+       className="absolute inset-0 w-full h-full bg-cover bg-top"      style={{
           backgroundImage: `url(${backgroundImageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       />
+
+
       <div
         className="absolute inset-0"
         style={{
@@ -25,7 +24,7 @@ const Hero = ({ initialData }) => {
         }}
       />
       <div className="relative h-full flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-2xl">
             {initialData && (
               <>

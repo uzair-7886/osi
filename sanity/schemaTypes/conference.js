@@ -4,12 +4,19 @@ export default {
     title: 'Oxford Leadership Conference',
     type: 'document',
     fields: [
+      
       /* ─────────── HERO / COUNTDOWN ─────────── */
       {
         name: 'hero',
         title: 'Hero Section',
         type: 'object',
         fields: [
+          {
+            name: 'image',
+            title: 'Hero Image',
+            type: 'image',
+            options: { hotspot: true }
+          },
           { name: 'headline', title: 'Headline', type: 'string', initialValue: 'GEAR UP FOR OUR OXFORD LEADERSHIP CONFERENCE' },
           {
             name: 'countdownDate',          // <- the only thing the timer needs

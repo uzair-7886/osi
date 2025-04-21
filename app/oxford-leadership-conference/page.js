@@ -1,5 +1,6 @@
 'use client'
-import HeroBanner from '../components/shared/HeroBanner'
+// import HeroBanner from '../components/shared/HeroBanner'
+import HeroBanner from '../components/oxford-leadership-conference/HeroBanner'
 import React, { useEffect, useState } from 'react'
 import { client } from '@/sanity/lib/client'
 import Intro from '../components/oxford-leadership-conference/Intro'
@@ -62,7 +63,10 @@ const page = () => {
     }
   return (
     <>
-    <HeroBanner text={"Oxford Leadership Conference"} />
+     <HeroBanner 
+    image={data.hero.image}
+   text={data.hero.headline}
+  />
     <Intro hero={data.hero} />
     <Partners logos={data.partners} />
     <Audience items={data.audience} />

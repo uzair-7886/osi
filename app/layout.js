@@ -20,7 +20,7 @@ export const metadata = {
   title: "Oxford Center for Leadership",
   description: "Oxford Center for Leadership",
   icons: {
-    icon: "/logo.jpeg",
+    icon: "/favicon.svg",
   },
 };
 
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         {/* Google Analytics Script */}
-        <link rel="icon" href="/logo.jpeg" />
+        <link rel="icon" href="/favicon.svg" />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-6WFWQMG9DH"
           strategy="afterInteractive"

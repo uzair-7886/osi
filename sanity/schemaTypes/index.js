@@ -34,8 +34,8 @@ import conference from "./conference"
 
 export const schema = {
   types: [
-    executiveProgram,
     conference,
+    executiveProgram,
     registration,
     HeroSection,
     testimonials,

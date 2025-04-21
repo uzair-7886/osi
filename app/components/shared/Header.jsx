@@ -9,7 +9,7 @@ const Header = () => {
           OCL
         </div> */}
         <Link href="/">
-              <img src="/logo.jpeg" alt="Logo" className="h-12 sm:h-10 w-auto" />
+              <img src="/logo.jpeg" alt="Logo" className="h-12 px-2 sm:h-10 w-auto" />
             </Link>
       
       </div>
