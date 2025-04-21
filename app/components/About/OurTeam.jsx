@@ -34,13 +34,13 @@ const OurTeam = () => {
     const { sub_heading, description, images } = data;
 
     return (
-        <div className="bg-gray-200 relative w-full py-16 px-16 md:py-24 md:px-24">
+        <div className="bg-gray-200 relative w-full py-8 px-6 md:py-24 md:px-24">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
                 {/* Text Section */}
                 <div className="md:w-6/12">
                     <h2 className="text-orange text-lg font-semibold uppercase mb-2">Our Team</h2>
                     <h3 className="text-3xl font-bold text-gray-800 mb-6">{sub_heading}</h3>
-                    <p className="text-gray-600 text-lg leading-relaxed">{description}</p>
+                    <p className="text-grey text-lg leading-relaxed text-justify">{description}</p>
 
                     
                 </div>

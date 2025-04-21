@@ -61,10 +61,47 @@ export default {
   
       /* ─────────── WHY ATTEND ─────────── */
       {
-        name: 'whyAttend',
-        title: 'Why Attend Copy',
+        name: 'whyAttendDescription',
+        title: 'Why Attend Description',
         type: 'array',
-        of: [{ type: 'block' }]
+        of: [{ type: 'block' }],
+      },
+  
+      // 2️⃣ Array of image + text bullets
+      {
+        name: 'whyAttend',
+        title: 'Why Attend (with images, title & text)',
+        type: 'array',
+        of: [
+          {
+            type: 'object',
+            fields: [
+              {
+                name: 'image',
+                title: 'Image',
+                type: 'image',
+                options: { hotspot: true },
+              },
+              {
+                name: 'title',
+                title: 'Bullet Title',
+                type: 'string',
+              },
+              {
+                name: 'description',
+                title: 'Bullet Description',
+                type: 'text',
+                rows: 3,
+              },
+            ],
+            preview: {
+              select: {
+                title: 'title',
+                media: 'image',
+              },
+            },
+          },
+        ],
       },
   
       /* ─────────── SPEAKERS ─────────── */
@@ -88,9 +125,32 @@ export default {
       /* ─────────── WHAT TO EXPECT ─────────── */
       {
         name: 'expectations',
-        title: 'What To Expect (bullets)',
+        title: 'What To Expect (bullets with images)',
         type: 'array',
-        of: [{ type: 'string' }]
+        of: [
+          {
+            type: 'object',
+            fields: [
+              {
+                name: 'image',
+                title: 'Image',
+                type: 'image',
+                options: { hotspot: true }
+              },
+              {
+                name: 'text',
+                title: 'Caption',
+                type: 'string'
+              }
+            ],
+            preview: {
+              select: {
+                title: 'text',
+                media: 'image'
+              }
+            }
+          }
+        ]
       },
   
       /* ─────────── THEMATIC AREAS ─────────── */

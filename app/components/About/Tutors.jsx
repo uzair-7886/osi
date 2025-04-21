@@ -38,8 +38,8 @@ const TutorsSection = () => {
         <div className='bg-gray-200'>
 
         
-        <section className=" relative max-w-7xl mx-auto py-16 ">
-            <div className="text-center mb-12 px-16 md:px-24">
+        <section className=" relative max-w-7xl mx-auto py-8 ">
+            <div className="text-center mb-12 px-6 md:px-24">
                 <h2 className="text-orange uppercase tracking-widest text-lg font-bold">Why OCL?</h2>
                 {/* <h1 className="text-3xl font-bold text-gray-800 mb-4">{sub_heading}</h1> */}
                 <p className="text-gray-600 text-lg leading-relaxed">{description}</p>

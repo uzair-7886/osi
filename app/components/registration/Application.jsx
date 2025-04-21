@@ -76,7 +76,7 @@ const RegistrationFlow = () => {
         hearAbout: "",
       },
       payment: {
-        amount: 500,
+        amount: 5999,
         paymentStatus: "pending",
       },
       termsAgreed: false,
@@ -254,12 +254,110 @@ const RegistrationFlow = () => {
     );
   };
 
+  // const StepIndicator = () => (
+  //   <div className="w-2/5 bg-[#003180] p-8 flex flex-col items-start">
+  //     {/* <div className="text-white text-2xl font-bold mb-12">OCL LOGO</div> */}
+  //     <img src="/logo.jpeg" alt="Logo" className="h-16 w-auto object-contain"/>
+
+  //     <div className="flex flex-col space-y-8 font-semibold relative">
+  //       <div className="absolute left-5 top-10 w-0.5 h-[calc(100%-40px)] bg-grey"></div>
+  //       <div
+  //         className="absolute left-5 top-10 w-0.5 bg-orange transition-all duration-300"
+  //         style={{
+  //           height: `${Math.max(0, Math.min(step - 1, 2)) * 25}%`,
+  //         }}
+  //       ></div>
+  //       <div className="flex items-center">
+  //         <div
+  //           className={`w-10 h-10 rounded-full border-2 ${step >= 1 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+  //         >
+  //           1
+  //         </div>
+  //         <span className="ml-4 text-white">Registration Form</span>
+  //       </div>
+  //       <div className="flex items-center">
+  //         <div
+  //           className={`w-10 h-10 rounded-full border-2 ${step >= 2 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+  //         >
+  //           2
+  //         </div>
+  //         <span className="ml-4 text-white">Application Form</span>
+  //       </div>
+  //       <div className="flex items-center">
+  //         <div
+  //           className={`w-10 h-10 rounded-full border-2 ${step >= 4 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
+  //         >
+  //           3
+  //         </div>
+  //         <span className="ml-4 text-white">Confirm Application</span>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
+
+
+
   const StepIndicator = () => (
-    <div className="w-2/5 bg-[#003180] p-8 flex flex-col">
-      <div className="text-white text-2xl font-bold mb-12">OCL LOGO</div>
-      <div className="flex flex-col space-y-8 font-semibold relative">
+    <>
+      {/* Mobile horizontal indicator */}
+      <div className="w-full bg-[#003180] p-4 flex items-center justify-around rounded-[15px] md:hidden">
+        {/* Step 1 */}
+        <div className="flex flex-col items-center">
+          <div
+            className={`w-8 h-8 rounded-full border-2 ${
+              step >= 1 ? 'border-orange' : 'border-grey'
+            } flex items-center justify-center text-white`}
+          >
+            1
+          </div>
+          <span className="text-white text-xs mt-1">Registration</span>
+        </div>
+        {/* Connector */}
+        <div className="h-0.5 flex-1 bg-grey mx-2">
+          <div
+            className="h-full bg-orange transition-all duration-300"
+            style={{ width: `${step > 1 ? '100%' : '0%'}` }}
+          />
+        </div>
+        {/* Step 2 */}
+        <div className="flex flex-col items-center">
+          <div
+            className={`w-8 h-8 rounded-full border-2 ${
+              step >= 2 ? 'border-orange' : 'border-grey'
+            } flex items-center justify-center text-white`}
+          >
+            2
+          </div>
+          <span className="text-white text-xs mt-1">Application</span>
+        </div>
+        {/* Connector */}
+        <div className="h-0.5 flex-1 bg-grey mx-2">
+          <div
+            className="h-full bg-orange transition-all duration-300"
+            style={{ width: `${step > 2 ? '100%' : '0%'}` }}
+          />
+        </div>
+        {/* Step 3 */}
+        <div className="flex flex-col items-center">
+          <div
+            className={`w-8 h-8 rounded-full border-2 ${
+              step >= 3 ? 'border-orange' : 'border-grey'
+            } flex items-center justify-center text-white`}
+          >
+            3
+          </div>
+          <span className="text-white text-xs mt-1">Confirm</span>
+        </div>
+      </div>
+  
+      {/* Desktop vertical indicator */}
+      <div className="w-2/5 bg-[#003180] p-8 flex-col items-start hidden md:flex">
+       {/* <div className="text-white text-2xl font-bold mb-12">OCL LOGO</div> */}
+       <img src="/logo.jpeg" alt="Logo" className="h-16 w-auto object-contain"/>
+
+     <div className="flex flex-col space-y-8 font-semibold relative">
         <div className="absolute left-5 top-10 w-0.5 h-[calc(100%-40px)] bg-grey"></div>
-        <div
+      <div
           className="absolute left-5 top-10 w-0.5 bg-orange transition-all duration-300"
           style={{
             height: `${Math.max(0, Math.min(step - 1, 2)) * 25}%`,
@@ -291,8 +389,9 @@ const RegistrationFlow = () => {
         </div>
       </div>
     </div>
+    </>
   );
-
+  
   const RegistrationStep = () => {
     const [formStarted, setFormStarted] = useState(false);
 
@@ -305,7 +404,8 @@ const RegistrationFlow = () => {
 
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+              <img src="/logo-footer.jpeg" alt="Logo" className="h-20 py-4 w-auto object-contain"/>
+
         <h2 className="text-xl text-orange font-semibold mb-8 text-center">REGISTRATION FORM</h2>
         <div className="space-y-6 max-w-sm w-full text-[#555555]">
           <div>
@@ -316,6 +416,7 @@ const RegistrationFlow = () => {
                 className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
                 disabled={isSubmitting}
                 onFocus={handleFocus}
+                required
               >
                 <option value="">Select your age...</option>
                 <option value="13-15">13-15</option>
@@ -336,11 +437,12 @@ const RegistrationFlow = () => {
                 {...register('step1.subject1')}
                 className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
                 disabled={isSubmitting}
+                required
               >
                 <option value="">Select subject ...</option>
-                <option value="mathematics">Physical Sciences</option>
-                <option value="physics">Social Sciences</option>
-                <option value="chemistry">Humanities</option>
+                <option value="Physical Sciences">Physical Sciences</option>
+                <option value="Social Sciences">Social Sciences</option>
+                <option value="Humanities">Humanities</option>
               </select>
               <img
                 src="/svgs/chev-down.svg"
@@ -356,11 +458,12 @@ const RegistrationFlow = () => {
                 {...register('step1.subject2')}
                 className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
                 disabled={isSubmitting}
+                required
               >
                 <option value="">Select subject ...</option>
-                <option value="mathematics">Physical Sciences</option>
-                <option value="physics">Social Sciences</option>
-                <option value="chemistry">Humanities</option>
+                <option value="Physical Sciences">Physical Sciences</option>
+                <option value="Social Sciences">Social Sciences</option>
+                <option value="Humanities">Humanities</option>
               </select>
               <img
                 src="/svgs/chev-down.svg"
@@ -398,6 +501,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your name.."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -408,6 +512,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your surname.."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -417,6 +522,7 @@ const RegistrationFlow = () => {
             type="date"
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -425,6 +531,7 @@ const RegistrationFlow = () => {
             {...register("step2.gender")}
             className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
             disabled={isSubmitting}
+            required
           >
             <option value="">Select gender...</option>
             <option value="male">Male</option>
@@ -440,6 +547,7 @@ const RegistrationFlow = () => {
             placeholder="info@xyz.com"
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -450,6 +558,7 @@ const RegistrationFlow = () => {
             placeholder="+91 - 98596 58000"
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -460,6 +569,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your address..."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -470,6 +580,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your Town/City..."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div className="col-span-2">
@@ -480,6 +591,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your country..."
             className="w-1/2 p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
       </div>
@@ -501,12 +613,13 @@ const RegistrationFlow = () => {
       <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
       <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
         <div>
-          <label className="block mb-2">Your Institution (School/University/Organisation):</label>
+          <label className="block mb-2">Your Institution :</label>
           <div className="relative">
             <select
               {...register("step3.institution")}
               className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
               disabled={isSubmitting}
+              required
             >
               <option value="">Select your institution...</option>
               <option value="school">School</option>
@@ -528,6 +641,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your Institution name..."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -538,6 +652,7 @@ const RegistrationFlow = () => {
             placeholder="Enter your Institution city..."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
         <div>
@@ -557,6 +672,7 @@ const RegistrationFlow = () => {
               {...register("step3.visaRequirement")}
               className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
               disabled={isSubmitting}
+              required
             >
               <option value="">Select requirement...</option>
               <option value="yes">Yes</option>
@@ -577,6 +693,7 @@ const RegistrationFlow = () => {
             placeholder="Enter response..."
             className="w-full p-3 bg-[#EEEEEE] rounded-lg"
             disabled={isSubmitting}
+            required
           />
         </div>
       </div>
@@ -592,7 +709,7 @@ const RegistrationFlow = () => {
     </form>
   );
 
-  const ConfirmationStep = ({ applicationId, step1, step2 }) => {
+  const ConfirmationStep = ({ applicationId, step1, step2, paymentAmount }) => {    
     const stripe = useStripe();
     const elements = useElements();
     const [errorMessage, setErrorMessage] = useState("");
@@ -604,16 +721,19 @@ const RegistrationFlow = () => {
         setErrorMessage("Stripe is not ready. Please try again later.");
         return;
       }
-      setLoading(true);
-      try {
-        const amount = getValues("payment.amount");
-        const { error, paymentIntent } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `/payment-success?amount=${amount}`,
-          },
-          redirect: "if_required",
-        });
+      const amount = getValues("payment.amount");
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+  setLoading(true);
+
+  try {
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // ✅ must be absolute, e.g. https://example.com/payment-success?amount=500
+        return_url: `${origin}/payment-success?amount=${amount}`,
+      },
+      redirect: "if_required",
+    });
 
         if (error) {
           setErrorMessage(error.message);
@@ -629,6 +749,7 @@ const RegistrationFlow = () => {
             applicationId
           );
           setModalStatus({ isOpen: true, status: "failure" });
+          console.error("Payment error:", error);
           // setLoading(false);
           return;
         }
@@ -686,23 +807,23 @@ const RegistrationFlow = () => {
               <tr>
                 <td className="border border-[#555555] p-1">
                   <div className="mb-4">
-                    Oxford Centre for Leadership Summer Program - July 8th -
-                    August 1st, 2025
+                    Oxford Centre for Leadership Summer Program - 18th August - 29th August, 2025
                   </div>
+
                   <div className="space-y-1">
-                    <div>Age Group: (Auto Filled)</div>
-                    <div>Subject 1: (Auto Filled)</div>
-                    <div>Subject 2: (Auto Filled)</div>
+                    <div>Age Group: {step1.ageGroup}</div>
+                    <div>Subject 1: {step1.subject1}</div>
+                    <div>Subject 2: {step1.subject2}</div>
                   </div>
                 </td>
                 <td className="border border-[#555555] p-1 text-right">
-                  £ (Auto Filled)
+                  £ {paymentAmount}
                 </td>
               </tr>
               <tr>
                 <td className="border border-[#555555] p-1 ">Total</td>
                 <td className="border border-[#555555] p-1 text-right ">
-                  £ (Auto Filled)
+                  £ {paymentAmount}
                 </td>
               </tr>
             </tbody>
@@ -759,6 +880,7 @@ const RegistrationFlow = () => {
           applicationId={applicationId}
           step1={getValues('step1')}
           step2={getValues('step2')}
+          paymentAmount={getValues('payment.amount')}
         />
       </Elements>
     ) : (
@@ -773,21 +895,51 @@ const RegistrationFlow = () => {
     ),
   ];
 
+  // return (
+  //   <div className="min-h-screen flex items-center justify-center bg-gray-50 p-5">
+  //     <Modal
+  //       isOpen={modalStatus.isOpen}
+  //       status={modalStatus.status}
+  //       onClose={() => setModalStatus({ isOpen: false, status: "" })}
+  //     />
+  //     <div className="flex rounded-tr-[40px] w-4/5 shadow-2xl">
+  //       <StepIndicator />
+  //       <div className="w-full">
+  //         <FormProvider {...methods}>{steps[step - 1]}</FormProvider>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-5">
-      <Modal
+    <div className="min-h-screen bg-gray-50 p-5 flex items-center justify-center">
+           <Modal
         isOpen={modalStatus.isOpen}
         status={modalStatus.status}
         onClose={() => setModalStatus({ isOpen: false, status: "" })}
       />
-      <div className="flex rounded-tr-[40px] w-4/5 shadow-2xl">
+  
+      {/* Mobile */}
+      <div className="block md:hidden w-full max-w-md shadow-2xl rounded-[15px]">
         <StepIndicator />
         <div className="w-full">
-          <FormProvider {...methods}>{steps[step - 1]}</FormProvider>
+          <FormProvider {...methods}>
+            {steps[step - 1]}
+          </FormProvider>
+        </div>
+      </div>
+  
+      {/* Desktop */}
+      <div className="hidden md:flex w-4/5 shadow-2xl rounded-tr-[40px]">
+        <StepIndicator />
+        <div className="w-full">
+          <FormProvider {...methods}>
+            {steps[step - 1]}
+          </FormProvider>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default RegistrationFlow;

@@ -25,10 +25,15 @@ export default {
                 type: 'string',
                 validation: Rule => Rule.required().min(2).max(50),
               },
+              // {
+              //   title:'Rating',
+              //   name:'rating',
+              //   type:'number',
+              // },
               {
-                title:'Rating',
-                name:'rating',
-                type:'number',
+                title:"Country",
+                name:"country",
+                type:"string",
               },
               {
                 title: 'Image',

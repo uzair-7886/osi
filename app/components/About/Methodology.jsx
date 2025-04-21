@@ -39,7 +39,7 @@ const MethodologySection = () => {
     const hasImages = images && images.length > 0 && images[0].image;
 
     return (
-        <div className="relative w-full py-16 px-16 md:py-24 md:px-24">
+        <div className="relative w-full py-8 px-6 md:py-24 md:px-24">
             <div className="max-w-7xl mx-auto items-center">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="lg:col-span-1">

@@ -9,7 +9,7 @@ const testimonialsQuery = `
     testimonialsList[] {
       text,
       name,
-      rating,
+      country,
       image
     }
   }
@@ -27,16 +27,15 @@ const TestimonialsSlider = () => {
           const formattedTestimonials = data.testimonialsList.map(item => ({
             text: item.text,
             author: item.name,
-            rating: item.rating || 5,
+            // rating: item.rating || 5,
+            country: item.country,
             image: item.image ? urlFor(item.image).url() : ""
           }));
           setTestimonials(formattedTestimonials);
         }
       } catch (error) {
         console.error("Error fetching testimonials:", error);
-        setTestimonials([
-          
-        ]);
+        setTestimonials([]);
       }
     };
 
@@ -64,26 +63,32 @@ const TestimonialsSlider = () => {
   }
 
   return (
-    <div className='bg-grey bg-opacity-10'>
+    <div className="bg-grey bg-opacity-10">
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div className="md:w-1/2">
+          {/* Heading */}
+          <div className="md:w-1/2 mb-8 md:mb-0">
             <h3 className="text-orange font-medium mb-2">TESTIMONIALS</h3>
-            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4 md:mb-0">
+            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
               Look What Our<br />Participants Say!
             </h2>
           </div>
-          
+
+          {/* Slider */}
           <div className="md:w-1/2">
-            <div className="bg-white rounded-3xl p-8 shadow-lg h-80">
-              <img src="/svgs/q.svg" alt="quotes" className='mb-6'/>
-              <p className="text-gray-700 text-lg mb-8">
+            {/* Card */}
+            <div className="bg-white rounded-3xl p-8 shadow-lg h-[420px] md:h-80 flex flex-col items-start">
+              {/* Quote icon + text */}
+              <img src="/svgs/q.svg" alt="quotes" className="mb-6 h-10" />
+              <p className="text-gray-700 text-lg">
                 {testimonials[currentSlide].text}
               </p>
-              <div className="flex items-center justify-between">
+
+              {/* Footer: avatar, name & country pinned to bottom */}
+              <div className="mt-auto flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <img 
-                    src={testimonials[currentSlide].image} 
+                  <img
+                    src={testimonials[currentSlide].image}
                     alt={testimonials[currentSlide].author}
                     className="w-12 h-12 rounded-full object-cover"
                   />
@@ -91,28 +96,23 @@ const TestimonialsSlider = () => {
                     {testimonials[currentSlide].author}
                   </span>
                 </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={20}
-                      className={i < testimonials[currentSlide].rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-                    />
-                  ))}
-                </div>
+                <span className="text-orange text-sm px-4">
+                  {testimonials[currentSlide].country}
+                </span>
               </div>
             </div>
 
+            {/* Controls */}
             <div className="flex justify-between items-center mt-8">
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={prevSlide}
                   className="w-12 h-12 rounded-full border-2 border-orange text-orange flex items-center justify-center hover:bg-orange hover:text-white transition-colors"
                   disabled={testimonials.length <= 1}
                 >
                   <ArrowLeft size={20} />
                 </button>
-                <button 
+                <button
                   onClick={nextSlide}
                   className="w-12 h-12 rounded-full border-2 border-orange text-orange flex items-center justify-center hover:bg-orange hover:text-white transition-colors"
                   disabled={testimonials.length <= 1}

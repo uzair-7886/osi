@@ -167,7 +167,7 @@ const SubjectsSwitcher = ({ initialData, initialSubject }) => {
                   <h3 className="text-lg sm:text-xl font-medium text-orange">
                     {expandedCourse.name}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-600 mt-2">
+                  <p className="text-sm sm:text-base text-grey text-justify mt-2">
                     {expandedCourse.description}
                   </p>
                 </div>
@@ -208,7 +208,7 @@ const SubjectsSwitcher = ({ initialData, initialSubject }) => {
 
           {filteredCourses?.length === 0 && (
             <div className="text-center py-8">
-              <p className="text-gray-500">No courses found matching your search.</p>
+              <p className="text-grey">No courses found matching your search.</p>
             </div>
           )}
         </div>

@@ -31,9 +31,11 @@ import studentCodeOfConduct from "./studentCodeOfConduct"
 import  termsAndConditions  from "./termsAndConditions"
 import executiveProgram from "./executiveProgram"
 import conference from "./conference"
+import brochures from "./brochures"
 
 export const schema = {
   types: [
+    brochures,
     conference,
     executiveProgram,
     registration,

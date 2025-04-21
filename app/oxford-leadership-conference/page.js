@@ -24,7 +24,8 @@ const page = () => {
            hero,
            partners,
            audience,
-           whyAttend,
+           whyAttendDescription,
+    whyAttend,
            speakers,
            expectations,
            themes,
@@ -70,7 +71,10 @@ const page = () => {
     <Intro hero={data.hero} />
     <Partners logos={data.partners} />
     <Audience items={data.audience} />
-    <WhyAttend items={data.whyAttend} />
+    <WhyAttend
+  description={data.whyAttendDescription}
+  items={data.whyAttend}
+/>
     <Speakers speakers={data.speakers} />
     <Expect bullets={data.expectations} />
     <Themes themes={data.themes} />
