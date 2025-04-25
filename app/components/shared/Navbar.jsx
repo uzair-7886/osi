@@ -21,7 +21,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6  md:h-[80px] md:text-[16px] font-medium">
+      <div className=" w-full mx-auto px-8  sm:px-6  md:h-[80px] md:text-[16px] font-medium">
         <div className="flex items-center justify-between h-16 ">
         <div className="flex items-center">
     {/* Mobile logo */}
@@ -78,7 +78,7 @@ const Navbar = () => {
                     </div>
                   )}
                 </div>
-                <Link href="/oxford-executive-program" className={`${isActivePage('oxford-executive-program') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Executive Program</Link>
+                <Link href="/oxford-executive-program" className={`${isActivePage('oxford-executive-program') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Oxford Executive Leadership Program</Link>
                 <Link href="/why-choose-us" className={`${isActivePage('/why-choose-us') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Why Choose Us</Link>
                 <Link href="/parents" className={`${isActivePage('/parents') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}>Parents</Link>
                 <Link href="/oxford-leadership-conference" className={`${isActivePage('/oxford-leadership-conference') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'} text-black px-3 py-2 rounded-full text-sm font-medium`}> Leadership Conference</Link>
@@ -177,7 +177,7 @@ Terms and Conditions      </Link>
         className={`${isActivePage('/oxford-executive-program') ? 'bg-darkblue bg-opacity-30' : 'hover:bg-gray-100'}
                     text-black block px-3 py-2 rounded-md text-base font-medium`}
       >
-        Executive Program
+        Oxford Executive Leadership Program
       </Link>
 
       <Link

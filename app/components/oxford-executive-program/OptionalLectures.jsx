@@ -5,7 +5,7 @@ import React from 'react'
 export default function OptionalLectures({ optionalLectures }) {
   return (
     <section className="py-16 bg-white mx-autp">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <h2 className="text-2xl font-semibold text-orange mb-6">
           Optional Lectures Tailored for Public Leaders, Civil Servants, and Development Practitioners
         </h2>

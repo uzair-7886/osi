@@ -49,6 +49,7 @@ const RegistrationFlow = () => {
 
   const methods = useForm({
     defaultValues: {
+      programName: '',
       applicationId: "",
       status: "draft",
       step1: {
@@ -76,14 +77,23 @@ const RegistrationFlow = () => {
         hearAbout: "",
       },
       payment: {
-        amount: 5999,
-        paymentStatus: "pending",
+        amount: 5999,              
+        paymentStatus: 'pending',
       },
       termsAgreed: false,
     },
   });
 
+
+
   const { handleSubmit, register, getValues, setValue } = methods;
+
+  const watchProgram = methods.watch('programName');        
+
+  useEffect(() => {                                         
+    if (watchProgram === 'summer')    setValue('payment.amount', 5999);
+    if (watchProgram === 'executive') setValue('payment.amount', 6999);
+  }, [watchProgram, setValue]);
 
   useEffect(() => {
     if (step === 1) {
@@ -128,6 +138,7 @@ const RegistrationFlow = () => {
     try {
       const registrationDoc = {
         _type: "registration",
+        programName: data.programName,
         status: "pending_payment",
         applicationId: uuidv4(),
         step1: {
@@ -254,47 +265,6 @@ const RegistrationFlow = () => {
     );
   };
 
-  // const StepIndicator = () => (
-  //   <div className="w-2/5 bg-[#003180] p-8 flex flex-col items-start">
-  //     {/* <div className="text-white text-2xl font-bold mb-12">OCL LOGO</div> */}
-  //     <img src="/logo.jpeg" alt="Logo" className="h-16 w-auto object-contain"/>
-
-  //     <div className="flex flex-col space-y-8 font-semibold relative">
-  //       <div className="absolute left-5 top-10 w-0.5 h-[calc(100%-40px)] bg-grey"></div>
-  //       <div
-  //         className="absolute left-5 top-10 w-0.5 bg-orange transition-all duration-300"
-  //         style={{
-  //           height: `${Math.max(0, Math.min(step - 1, 2)) * 25}%`,
-  //         }}
-  //       ></div>
-  //       <div className="flex items-center">
-  //         <div
-  //           className={`w-10 h-10 rounded-full border-2 ${step >= 1 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
-  //         >
-  //           1
-  //         </div>
-  //         <span className="ml-4 text-white">Registration Form</span>
-  //       </div>
-  //       <div className="flex items-center">
-  //         <div
-  //           className={`w-10 h-10 rounded-full border-2 ${step >= 2 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
-  //         >
-  //           2
-  //         </div>
-  //         <span className="ml-4 text-white">Application Form</span>
-  //       </div>
-  //       <div className="flex items-center">
-  //         <div
-  //           className={`w-10 h-10 rounded-full border-2 ${step >= 4 ? "border-orange" : "border-grey"} flex items-center justify-center text-white bg-[#003180] relative z-10`}
-  //         >
-  //           3
-  //         </div>
-  //         <span className="ml-4 text-white">Confirm Application</span>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
 
 
   const StepIndicator = () => (
@@ -408,7 +378,29 @@ const RegistrationFlow = () => {
 
         <h2 className="text-xl text-orange font-semibold mb-8 text-center">REGISTRATION FORM</h2>
         <div className="space-y-6 max-w-sm w-full text-[#555555]">
+        <div>
+    <label className="block mb-2">Program :</label>
+    <div className="relative">
+      <select
+        {...register('programName', { required: true })}
+        className="w-full p-3 bg-[#EEEEEE] rounded-lg appearance-none"
+        disabled={isSubmitting}
+        onFocus={handleFocus}
+        required
+      >
+        <option value="">Select program…</option>
+        <option value="summer">Oxford Summer Program</option>
+        <option value="executive">Oxford Executive Leadership Program</option>
+      </select>
+      <img
+        src="/svgs/chev-down.svg"
+        alt="dropdown"
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none"
+      />
+    </div>
+  </div>
           <div>
+
             <label className="block mb-2">Age Group :</label>
             <div className="relative">
               <select
@@ -430,6 +422,8 @@ const RegistrationFlow = () => {
               />
             </div>
           </div>
+          {watchProgram === 'summer' && (
+    <>
           <div>
             <label className="block mb-2">Subject 1 :</label>
             <div className="relative">
@@ -472,6 +466,8 @@ const RegistrationFlow = () => {
               />
             </div>
           </div>
+          </>
+           )}
           <div className="flex justify-center">
             <button
               type="submit"
@@ -490,7 +486,8 @@ const RegistrationFlow = () => {
 
   const ApplicationStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+      {/* <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1> */}
+      <img src="/logo-footer.jpeg" alt="Logo" className="h-20 py-4 w-auto object-contain"/>
       <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
       <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
         <div>
@@ -609,7 +606,8 @@ const RegistrationFlow = () => {
 
   const FurtherInfoStep = () => (
     <form onSubmit={handleSubmit(onSubmit)} className="p-8 flex flex-col items-center">
-      <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1>
+      {/* <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">OCL LOGO</h1> */}
+      <img src="/logo-footer.jpeg" alt="Logo" className="h-20 py-4 w-auto object-contain"/>
       <h2 className="text-xl text-orange font-semibold mb-4 text-center">APPLICATION FORM</h2>
       <div className="grid grid-cols-2 gap-6 max-w-4xl w-full text-[#555555]">
         <div>
@@ -714,6 +712,8 @@ const RegistrationFlow = () => {
     const elements = useElements();
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const programName = getValues('programName');   
+const isSummer    = programName === 'summer'; 
 
     const handlePayment = async (e) => {
       e.preventDefault();
@@ -785,9 +785,10 @@ const RegistrationFlow = () => {
 
     return (
       <form onSubmit={handlePayment} className="p-8">
-        <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
+        {/* <h1 className="text-2xl font-bold text-[#003180] mb-2 text-center">
           OCL LOGO
-        </h1>
+        </h1> */}
+        <img src="/logo-footer.jpeg" alt="Logo" className="h-20 py-4 w-auto object-contain"/>
         <h2 className="text-xl text-orange font-semibold mb-8 text-center">
           CONFIRM APPLICATION
         </h2>
@@ -807,13 +808,19 @@ const RegistrationFlow = () => {
               <tr>
                 <td className="border border-[#555555] p-1">
                   <div className="mb-4">
-                    Oxford Centre for Leadership Summer Program - 18th August - 29th August, 2025
+                  {isSummer
+      ? 'Oxford Centre for Leadership Summer Program'
+      : 'Oxford Executive Leadership Program'}
                   </div>
 
                   <div className="space-y-1">
                     <div>Age Group: {step1.ageGroup}</div>
+                    {isSummer && (
+                      <>
                     <div>Subject 1: {step1.subject1}</div>
                     <div>Subject 2: {step1.subject2}</div>
+                    </>
+                    )}
                   </div>
                 </td>
                 <td className="border border-[#555555] p-1 text-right">

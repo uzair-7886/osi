@@ -8,7 +8,7 @@ import ProgramInfo from '../components/oxford-executive-program/ProgramInfo'
 import Courses from '../components/oxford-executive-program/Courses'
 import OptionalLectures from '../components/oxford-executive-program/OptionalLectures'
 import HeroBanner from '../components/shared/HeroBanner'
-
+import DownloadBrochure from '../components/oxford-executive-program/DownloadBrochurs'
 
 export default function ExecutiveProgramPage() {
     const [data, setData] = useState(null)
@@ -57,9 +57,10 @@ export default function ExecutiveProgramPage() {
   
     return (
       <>
-        <HeroBanner text="Oxford Executive Program" />
+        <HeroBanner text="Oxford Executive Leadership Program" />
         <Intro title={data.title} overview={data.overview} />
         <Audience audience={data.audience} />
+        <DownloadBrochure />
         <ProgramInfo programInfo={data.programInfo} />
         <Courses courses={data.courses} />
         <OptionalLectures optionalLectures={data.optionalLectures} />

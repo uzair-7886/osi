@@ -10,6 +10,17 @@ export default {
         readOnly: true,
       },
       {
+        name: 'programName',
+        title: 'Program',
+        type: 'string',
+        options: {
+          list: [
+            { title: 'Oxford Summer Program', value: 'summer' },
+            { title: 'Oxford Executive Leadership Program', value: 'executive' },
+          ],
+        },
+      },
+      {
         name: 'status',
         title: 'Application Status',
         type: 'string',
@@ -176,4 +187,18 @@ export default {
         type: 'datetime',
       },
     ],
+    preview: {
+      select: {
+        firstName: 'step2.firstName',
+        surname: 'step2.surname',
+        paymentStatus: 'payment.paymentStatus',
+      },
+      prepare({ firstName = '', surname = '', paymentStatus }) {
+        const fullName = `${firstName} ${surname}`.trim() || 'Unnamed applicant';
+        const status = paymentStatus ? ` - Payment: ${paymentStatus}` : '';
+        return {
+          title: `${fullName}${status}`,
+        };
+      },
+    }
   }
